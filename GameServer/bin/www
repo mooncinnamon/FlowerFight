@@ -1,0 +1,52 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+
+const debug = require('debug')('gameserver:server');
+const http = require('http');
+const cluster = require('cluster');
+
+const redisSocket = require('socket.io-redis');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+if (cluster.isMaster) {
+    const cpus = require('os').cpus().length;
+    for (let i = 0; i < cpus; i++) {
+        cluster.fork();
+    }
+
+    cluster.on('exit', function (worker, code, signal) {
+        console.log('worker' + worker.process.pid + ' died');
+        cluster.fork();
+    });
+} else {
+    console.log(" worker:=", process.pid);
+
+    const app = require('../app').app;
+
+    app.set('port', 4000);
+
+
+    /**
+     * Create HTTP server.
+     */
+    const server = require('../app').server;
+
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+    server.listen(4000, () => {
+        const host = server.address().address;
+        const port = server.address().port;
+        console.log("app listening at http://%s:%s", host, port);
+    });
+    /**
+     * Normalize a port into a number, string, or false.
+     */
+}
