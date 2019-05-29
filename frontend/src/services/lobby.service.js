@@ -13,7 +13,7 @@ function getlobby() {
         headers: authHeader(),
     };
 
-    console.log('lobbyService','getlobby', requestOptions);
+    console.log('lobbyService','getlobby');
     return axios.get(`http://localhost:4000/v1/room/list`, requestOptions)
         .then(response => {
             console.log('getlobby get',response.data);

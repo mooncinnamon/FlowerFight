@@ -14,6 +14,7 @@ class LobbyContainer extends Component {
 
         console.log('session Check', localStorage.getItem("accessToken"));
         this.handleClick = this.handleClick.bind(this);
+        this.lobbyClick = this.lobbyClick.bind(this);
     }
 
 
@@ -32,6 +33,16 @@ class LobbyContainer extends Component {
         };
         console.log('make room button Click');
         dispatch(lobbyActions.makeGame(users, history));
+    }
+
+    lobbyClick(e){
+        e.preventDefault();
+        const {distpach, history} = this.props;
+        const users = {
+            roomMaster: 'testuser'
+        };
+        console.log('room list click');
+        distpach(lobbyActions.insertGame(users, history));
     }
 
     render() {

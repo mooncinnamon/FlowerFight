@@ -1,12 +1,14 @@
 import React, {Component} from "react";
+import {cancleGame, startGame, addMember, deleteMember, addMemberSocket, recvMessage} from "../actions/game.actions";
 import Deck from "../Cards/Deck";
+import queryString from "query-string"
 import {connect} from "react-redux";
+import {MemberList, ButtonPanel, ChattingBox} from "../components";
+import socketIo from "socket.io-client";
 
 import axios from 'axios';
 
 let socket;
-
-const query = queryString.parse(location.search);
 
 class Lobby extends Component {
 
@@ -14,29 +16,23 @@ class Lobby extends Component {
         super(props);
         this.state = {
             response: false,
-            endpoint: "http://localhost:3001"
+            endpoint: "http://localhost:4000"
         };
-        axios.get('http://localhost:3001/v1/user/list')
+        /*axios.get('http://localhost:4000/v1/user/list')
             .then(response => {
                     console.log('axios', response.data);
                     response.data.forEach((user) => {
                         this.props.handleAddMember(user)
                     })
                 }
-            );
+            );*/
     }
 
     componentDidMount() {
-        const username = query.username;
+        const username = 'master';
         socket = socketIo(this.state.endpoint);
         if (typeof username !== 'undefined') {
-            socket.emit('send-username', username);
-            socket.on('recv-username', (res) => {
-                this.props.handleAddMember(res);
-            });
-            socket.on('chatting-room', (res) => {
-                this.props.handleRecvMessage(res)
-            });
+            socket.emit('joinRoom', username);
         }
     }
 
@@ -47,19 +43,20 @@ class Lobby extends Component {
 
     render() {
         const {dispatch, lobbyMember, chattingRoom} = this.props;
-        const username = query.username;
+        // const username = query.username;
+        const username = 'mooncinnamon';
         if (typeof username === 'undefined') {
             return (<h3>Please select any Error</h3>)
         }
         else {
             return (<div>
                     <MemberList
-                        memberList={lobbyMember}
+                        memberList={['moonciannmon']}
                     />
 
                     <ChattingBox
                         onSendMessage={this.props.handleSendMessage}
-                        username={query.username}
+                        username={username}
                         chatting={chattingRoom.chatting}
                     />
 
@@ -78,16 +75,6 @@ class Lobby extends Component {
     }
 }
 
-
-Lobby.propTypes = {
-    lobbyMember: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        userName: PropTypes.string.isRequired,
-        userMoney: PropTypes.number.isRequired
-    })),
-    chattingRoom: PropTypes.string.isRequired
-};
-
 const memberStateToProps = (state) => {
     return {
         lobbyMember: state.members,
@@ -102,7 +89,7 @@ const memberDispatchToProps = (dispatch) => {
             dispatch(addMember(data)) // 액션 메서드
         },
         handleSendMessage: (data) => {
-            socket.emit('send-message', query.username ,data);
+            socket.emit('joinRoom', 'mooncinnamon' );
         },
         handleRecvMessage: (data) => {
             console.log('recv data', data);

@@ -3,6 +3,7 @@ import {lobbyService} from '../services';
 
 export const lobbyActions = {
     getGameLobby,
+    insertGame,
     makeGame
 };
 
@@ -11,7 +12,7 @@ function getGameLobby() {
         lobbyService.getlobby()
             .then(
                 lobbyList => {
-                    console.log('loadLobby', 'success');
+                    console.log('loadLobby', 'success', lobbyList);
                     dispatch(setLobby(lobbyList));
                 },
                 error => {
@@ -35,4 +36,11 @@ function makeGame(user, history) {
         history.push('/game')
     );
     return {type: lobbyConstants.GAME_MAKE}
+}
+
+function insertGame(user, history) {
+    lobbyService.insertGame(user).then(
+        history.push('/game')
+    )
+    return {type: lobbyConstants.GAME_INSERT}
 }

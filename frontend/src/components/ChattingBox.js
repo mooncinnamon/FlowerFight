@@ -53,9 +53,3 @@ export default class ChattingBox extends Component {
     }
 
 }
-
-ChattingBox.propTypes = {
-    username: PropTypes.string.isRequired,
-    chatting: PropTypes.string.isRequired,
-    onSendMessage: PropTypes.func.isRequired
-};

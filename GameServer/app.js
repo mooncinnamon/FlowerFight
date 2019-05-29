@@ -15,6 +15,7 @@ const cors = require('cors');
 const server = http.createServer(app);
 const io = socket.listen(server);
 const client = redis.createClient();
+client.auth('1q2w3e4r');
 
 app.use(cors());
 /**
@@ -22,7 +23,8 @@ app.use(cors());
  */
 io.adapter(redisSocket({
     host: 'localhost',
-    port: 6379
+    port: 6379,
+    password: '1q2w3e4r'
 }));
 
 // mount socket io
@@ -51,10 +53,40 @@ app.get('*', (req, res, next) => {
     res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
+    const err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
+
+
+io.on('connection', (socket) => {
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+
+
+    socket.on('leaveRoom', (num, name) => {
+        socket.leave(room[num], () => {
+            console.log(name + ' leave a ' + room[num]);
+            io.to(room[num]).emit('leaveRoom', num, name);
+        });
+    });
+
+
+    socket.on('joinRoom', (roomMaster, name) => {
+        console.log('joinRoom','call');
+        socket.join(roomMaster, () => {
+            console.log(name + ' join a ' + roomMaster);
+            io.to(roomMaster).emit('joinRoom', roomMaster, name);
+        });
+    });
+
+
+    socket.on('chat message', (roomMaster,  msg) => {
+        io.to(roomMaster).emit('chat message',  msg);
+    });
+});
+
 
 
 module.exports = {app: app, server: server};
