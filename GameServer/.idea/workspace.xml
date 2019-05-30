@@ -2,32 +2,42 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52ae5822-2afe-4b83-8c4b-50af5b9fce79" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../frontend/src/Cards/Card.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../frontend/src/Cards/Card.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../frontend/src/Cards/CardContainer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../frontend/src/Cards/Deck.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../frontend/src/Cards/Deck.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../frontend/src/actions/game.actions.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../frontend/src/containers/FilterLink.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../frontend/src/stores/game.reducer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/db.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/env.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/controller.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/roles.model.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/users.model.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/verifyJwtToken.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend/public/images/slider-1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend/src/components/Menu.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend/src/containers/css/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/payload/JwtAuthenticationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/payload/JwtAuthenticationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/security/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/security/JwtTokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/rooms.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/rooms.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/actions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/actions/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/actions/lobby.actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/actions/lobby.actions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/components/ChattingBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/ChattingBox.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/actions/user.actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/actions/user.actions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/GamePanel.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/GamePanel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/components/Lobby.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/Lobby.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/components/LobbyList.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/LobbyList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/UserInfoForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/UserInfoForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/components/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/constants/lobby.constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/constants/lobby.constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/containers/GameRoomContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/containers/GameRoomContainer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/containers/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/containers/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/containers/LobbyContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/containers/LobbyContainer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/services/lobby.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/services/lobby.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/stores/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/stores/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/services/user.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/services/user.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/stores/authentication.reducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/stores/authentication.reducer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../socket-test/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../socket-test/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -41,12 +51,12 @@
   <component name="FileEditorManager">
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
+        <leaf>
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/routes/rooms.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="29">
-                  <caret line="54" column="6" lean-forward="true" selection-start-line="54" selection-start-column="6" selection-end-line="54" selection-end-column="6" />
+                <state relative-caret-position="1133">
+                  <caret line="76" column="36" selection-start-line="76" selection-start-column="36" selection-end-line="76" selection-end-column="36" />
                 </state>
               </provider>
             </entry>
@@ -54,7 +64,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/routes/games.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="255">
+                <state relative-caret-position="323">
                   <caret line="17" selection-start-line="17" selection-end-line="17" />
                 </state>
               </provider>
@@ -68,7 +78,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/routes/index.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="165">
+                <state relative-caret-position="209">
                   <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
                 </state>
               </provider>
@@ -77,17 +87,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/bin/www">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="450">
+                <state relative-caret-position="513">
                   <caret line="30" column="37" selection-start-line="30" selection-start-column="37" selection-end-line="30" selection-end-column="37" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/app.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-1">
-                  <caret line="62" column="35" lean-forward="true" selection-start-line="62" selection-start-column="35" selection-end-line="62" selection-end-column="35" />
                 </state>
               </provider>
             </entry>
@@ -95,12 +96,80 @@
         </leaf>
       </split-first>
       <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
+        <leaf>
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/bin/www">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="269">
+                <state relative-caret-position="663">
                   <caret line="39" selection-start-line="39" selection-end-line="39" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/app.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="243">
+                  <caret line="24" column="22" lean-forward="true" selection-start-line="24" selection-start-column="22" selection-end-line="24" selection-end-column="22" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/models/users.model.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="209">
+                  <caret line="11" column="19" lean-forward="true" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/models/roles.model.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="190">
+                  <caret line="10" column="1" lean-forward="true" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/config/env.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="57">
+                  <caret line="3" column="23" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="23" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/config/db.config.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="418">
+                  <caret line="22" column="34" selection-start-line="22" selection-start-column="34" selection-end-line="22" selection-end-column="34" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/controllers/controller.js">
+              <provider selected="true" editor-type-id="text-editor" />
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/routes/verifyJwtToken.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="589">
+                  <caret line="31" column="12" selection-start-line="31" selection-start-column="12" selection-end-line="31" selection-end-column="12" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/config/config.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="19">
+                  <caret line="1" column="32" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="32" />
                 </state>
               </provider>
             </entry>
@@ -130,17 +199,28 @@
         <option value="$PROJECT_DIR$/socket.js" />
         <option value="$PROJECT_DIR$/bin/www" />
         <option value="$PROJECT_DIR$/routes/games.js" />
-        <option value="$PROJECT_DIR$/routes/rooms.js" />
         <option value="$PROJECT_DIR$/routes/index.js" />
         <option value="$PROJECT_DIR$/routes/socket.js" />
+        <option value="$PROJECT_DIR$/controllers/controller.js" />
+        <option value="$PROJECT_DIR$/models/users.model.js" />
+        <option value="$PROJECT_DIR$/models/roles.model.js" />
+        <option value="$PROJECT_DIR$/config/env.js" />
+        <option value="$PROJECT_DIR$/routes/rooms.js" />
+        <option value="$PROJECT_DIR$/config/db.config.js" />
         <option value="$PROJECT_DIR$/app.js" />
+        <option value="$PROJECT_DIR$/config/config.js" />
+        <option value="$PROJECT_DIR$/routes/verifyJwtToken.js" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="y" value="23" />
-    <option name="width" value="1920" />
-    <option name="height" value="1113" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="2576" />
+    <option name="height" value="1416" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -162,13 +242,17 @@
             <path>
               <item name="GameServer" type="b2602c69:ProjectViewProjectNode" />
               <item name="GameServer" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="GameServer" type="b2602c69:ProjectViewProjectNode" />
               <item name="GameServer" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="controllers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="GameServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="GameServer" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="GameServer" type="b2602c69:ProjectViewProjectNode" />
@@ -226,7 +310,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35095000" />
+    <option name="totallyTimeSpent" value="41087000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -238,10 +322,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1200" extended-state="0" />
+    <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24907847" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24980299" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -250,9 +334,9 @@
       <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="3" />
       <window_info anchor="bottom" id="Find" order="4" />
-      <window_info anchor="bottom" id="Terminal" order="5" weight="0.32920355" />
-      <window_info active="true" anchor="bottom" id="Run" order="6" visible="true" weight="0.48141593" />
-      <window_info anchor="bottom" id="Debug" order="7" weight="0.35752213" />
+      <window_info anchor="bottom" id="Terminal" order="5" weight="0.32917318" />
+      <window_info anchor="bottom" id="Run" order="6" weight="0.48127925" />
+      <window_info active="true" anchor="bottom" id="Debug" order="7" visible="true" weight="0.37363493" />
       <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="10" weight="0.32969603" />
@@ -264,6 +348,48 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="javascript">
+          <url>file://$PROJECT_DIR$/routes/verifyJwtToken.js</url>
+          <line>7</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint type="javascript">
+          <url>file://$PROJECT_DIR$/routes/verifyJwtToken.js</url>
+          <line>13</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint type="javascript">
+          <url>file://$PROJECT_DIR$/routes/verifyJwtToken.js</url>
+          <line>21</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint type="javascript">
+          <url>file://$PROJECT_DIR$/routes/verifyJwtToken.js</url>
+          <line>31</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint type="javascript">
+          <url>file://$PROJECT_DIR$/routes/verifyJwtToken.js</url>
+          <line>30</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint type="javascript">
+          <url>file://$PROJECT_DIR$/routes/verifyJwtToken.js</url>
+          <line>25</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/socket.js" />
     <entry file="file://$PROJECT_DIR$/public/static/js/2.6dea3031.chunk.js">
@@ -274,46 +400,85 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/games.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
+        <state relative-caret-position="323">
           <caret line="17" selection-start-line="17" selection-end-line="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/socket.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="26" lean-forward="true" selection-start-line="24" selection-start-column="26" selection-end-line="24" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/socket.js" />
     <entry file="file://$PROJECT_DIR$/bin/www">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="37" selection-start-line="30" selection-start-column="37" selection-end-line="30" selection-end-column="37" />
+        <state relative-caret-position="663">
+          <caret line="39" selection-start-line="39" selection-end-line="39" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/rooms.js">
+    <entry file="file://$PROJECT_DIR$/models/users.model.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="29">
-          <caret line="54" column="6" lean-forward="true" selection-start-line="54" selection-start-column="6" selection-end-line="54" selection-end-column="6" />
+        <state relative-caret-position="209">
+          <caret line="11" column="19" lean-forward="true" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/roles.model.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" column="1" lean-forward="true" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/env.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="23" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1">
-          <caret line="62" column="35" lean-forward="true" selection-start-line="62" selection-start-column="35" selection-end-line="62" selection-end-column="35" />
+        <state relative-caret-position="243">
+          <caret line="24" column="22" lean-forward="true" selection-start-line="24" selection-start-column="22" selection-end-line="24" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/db.config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="22" column="34" selection-start-line="22" selection-start-column="34" selection-end-line="22" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/rooms.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1133">
+          <caret line="76" column="36" selection-start-line="76" selection-start-column="36" selection-end-line="76" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/controller.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="1" column="32" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/verifyJwtToken.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="589">
+          <caret line="31" column="12" selection-start-line="31" selection-start-column="12" selection-end-line="31" selection-end-column="12" />
         </state>
       </provider>
     </entry>

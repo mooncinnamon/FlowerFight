@@ -1,6 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import PropTypes from 'prop-types';
 import NewWindow from 'react-new-window'
+import {Button, Col} from 'reactstrap';
 
 class GamePanel extends Component {
     constructor(props) {
@@ -15,10 +17,10 @@ class GamePanel extends Component {
     render() {
         const {clicked, url} = this.state;
         return (
-            <div>
-                <button onClick={() => this.toggleOpened()}>
+            <Fragment>
+                <Button color="primary" className={"btn-lg"} onClick={() => this.toggleOpened()}>
                     GameStart
-                </button>
+                </Button>
                 {clicked && this.props.loggedIn &&
                 <NewWindow
                     url={url}
@@ -26,16 +28,16 @@ class GamePanel extends Component {
                     features={features}
                 />
                 }
-            </div>
+            </Fragment>
         );
     }
 
     toggleOpened() {
-        if(this.props.loggedIn) {
+        if (this.props.loggedIn) {
             this.setState((prevState) => ({
                 clicked: !prevState.clicked
             }))
-        }else {
+        } else {
             console.log("please login");
         }
     }

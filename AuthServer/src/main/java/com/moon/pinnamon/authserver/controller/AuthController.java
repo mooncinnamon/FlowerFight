@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.swing.text.html.parser.Entity;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Collections;
 
@@ -51,7 +53,7 @@ public class AuthController {
     JwtTokenProvider tokenProvider;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws UnsupportedEncodingException {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -61,9 +63,12 @@ public class AuthController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        Long userId = tokenProvider.getUserIdFromJWT(jwt);
+        String username = userRepository.getOne(userId).getUsername();
+        ResponseEntity<JwtAuthenticationResponse> entity = ResponseEntity.ok(new JwtAuthenticationResponse(jwt, username));
+        entity.getBody();
+        return entity;
     }
 
     @PostMapping("/signup")

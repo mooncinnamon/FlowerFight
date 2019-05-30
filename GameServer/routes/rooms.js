@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const authJwt = require('./verifyJwtToken');
 const date = require('date-utils');
 /*
   Todo : Input Member Socket Room
@@ -73,7 +74,7 @@ router.post('/input', function (req, res, next) {
     });
 });
 
-router.get('/list', function (req, res, next) {
+router.get('/list', [authJwt.verifyToken], function (req, res, next) {
     readKey(res, (data) => {
         res.send(data);
     })

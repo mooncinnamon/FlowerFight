@@ -2,12 +2,42 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="01db1f80-1fa2-4e92-9759-eb14ce22b118" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GameServer/config/config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GameServer/config/db.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GameServer/config/env.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GameServer/controllers/controller.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GameServer/models/roles.model.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GameServer/models/users.model.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GameServer/routes/verifyJwtToken.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend/public/images/slider-1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend/src/components/Menu.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../frontend/src/containers/css/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/payload/JwtAuthenticationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/payload/JwtAuthenticationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/security/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AuthServer/src/main/java/com/moon/pinnamon/authserver/security/JwtTokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GameServer/.idea/jsLibraryMappings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GameServer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../GameServer/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GameServer/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/../GameServer/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GameServer/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../GameServer/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GameServer/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../GameServer/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GameServer/routes/rooms.js" beforeDir="false" afterPath="$PROJECT_DIR$/../GameServer/routes/rooms.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/actions/user.actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/actions/user.actions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/GamePanel.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/GamePanel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/Lobby.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/Lobby.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/LobbyList.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/LobbyList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/UserInfoForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/UserInfoForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/containers/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/containers/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/containers/LobbyContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/containers/LobbyContainer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/services/user.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/services/user.service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/stores/authentication.reducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/stores/authentication.reducer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -36,7 +66,7 @@
         <entry file="file://$PROJECT_DIR$/src/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="133">
-              <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
+              <caret line="7" column="11" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -47,7 +77,7 @@
     </leaf>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -145,15 +175,12 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1088" y="-8" width="1096" height="1896" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="npm" side_tool="true" />
-      <window_info id="Favorites" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.5992439" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" weight="0.3299532" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="npm" order="2" side_tool="true" />
+      <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23950057" />
@@ -161,6 +188,10 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.3299532" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -173,7 +204,7 @@
     <entry file="file://$PROJECT_DIR$/src/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
-          <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
+          <caret line="7" column="11" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>

@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import {authHeader} from '../util';
 import {userConstants} from "../constants";
@@ -6,6 +5,7 @@ import {userConstants} from "../constants";
 export const userService = {
     login,
     logout,
+    checkUser
 };
 
 function login(username, password) {
@@ -17,14 +17,30 @@ function login(username, password) {
 
     return axios.post(`http://localhost:8080/api/auth/signin`, requestOptions)
         .then(response => {
+            console.log('login', response);
             if (response.status === 200) {
                 console.log('user service', response);
                 localStorage.setItem('accessToken', JSON.stringify(response.data));
-                return response.data;
+                return {token: response.data.token, username: response.data.username};
             }
         })
         .catch(response => {
             console.log('post error', response);
+            logout();
+            return Promise.reject(response);
+        });
+}
+
+function checkUser() {
+    const requestOptions = {
+        headers: authHeader(),
+    };
+    return axios.get(`http://localhost:8080/api/user/me`, requestOptions)
+        .then(res => {
+            return res.data.username;
+        })
+        .catch(response => {
+            console.log('error', response);
             logout();
             return Promise.reject(response);
         });

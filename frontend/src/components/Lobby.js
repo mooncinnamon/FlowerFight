@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {ListGroupItem} from 'reactstrap';
 
 const Lobby = ({ name }) => (
-    <li>
+    <ListGroupItem>
         <a href={'/game'}>
         {name}
         </a>
-    </li>
+    </ListGroupItem>
 )
 
 

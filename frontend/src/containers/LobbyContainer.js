@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {lobbyActions} from '../actions';
 import {LobbyList} from '../components';
+import {ButtonGroup, Button, Container, Col, Row} from 'reactstrap';
+
 
 class LobbyContainer extends Component {
     constructor(props) {
@@ -35,7 +37,7 @@ class LobbyContainer extends Component {
         dispatch(lobbyActions.makeGame(users, history));
     }
 
-    lobbyClick(e){
+    lobbyClick(e) {
         e.preventDefault();
         const {distpach, history} = this.props;
         const users = {
@@ -49,12 +51,23 @@ class LobbyContainer extends Component {
         const {lobbyList} = this.props;
         console.log('LobbyContainer render', lobbyList);
         return (
-            <div>
-                <LobbyList lobbys={lobbyList}/>
-                <button onClick={this.handleClick}>
-                    방 만들기
-                </button>
-            </div>
+            <Container>
+                <Row>
+                    <Col xs={10}>
+                        <LobbyList lobbys={lobbyList}/>
+                    </Col>
+                    <Col xs={2}>
+                        <ButtonGroup vertical={true}>
+                            <Button onClick={this.handleClick}>
+                                방 만들기
+                            </Button>
+                            <Button>
+                                종료
+                            </Button>
+                        </ButtonGroup>
+                    </Col>
+                </Row>
+            </Container>
         )
     }
 }
