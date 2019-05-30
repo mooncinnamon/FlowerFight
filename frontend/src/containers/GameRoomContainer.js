@@ -3,8 +3,9 @@ import {cancleGame, startGame, addMember, deleteMember, addMemberSocket, recvMes
 import Deck from "../Cards/Deck";
 import queryString from "query-string"
 import {connect} from "react-redux";
-import {MemberList, ButtonPanel, ChattingBox} from "../components";
+import {MemberList, ButtonPanel} from "../components";
 import socketIo from "socket.io-client";
+import {GameBoard} from "../components/GameRoom";
 
 import axios from 'axios';
 
@@ -16,7 +17,7 @@ class Lobby extends Component {
         super(props);
         this.state = {
             response: false,
-            endpoint: "http://localhost:4000"
+            endpoint: "ws://localhost:4000"
         };
         /*axios.get('http://localhost:4000/v1/user/list')
             .then(response => {
@@ -30,7 +31,7 @@ class Lobby extends Component {
 
     componentDidMount() {
         const username = 'master';
-        socket = socketIo(this.state.endpoint);
+        socket = socketIo(this.state.endpoint,{transports: ['websocket']});
         if (typeof username !== 'undefined') {
             socket.emit('joinRoom', username);
         }
@@ -49,17 +50,9 @@ class Lobby extends Component {
             return (<h3>Please select any Error</h3>)
         }
         else {
-            return (<div>
-                    <MemberList
-                        memberList={['moonciannmon']}
-                    />
-
-                    <ChattingBox
-                        onSendMessage={this.props.handleSendMessage}
-                        username={username}
-                        chatting={chattingRoom.chatting}
-                    />
-
+            return (
+                <div>
+                    <GameBoard data={[]}/>
                     <ButtonPanel
                         memberList={lobbyMember}
                         onStartClick={(lobbyMember) =>

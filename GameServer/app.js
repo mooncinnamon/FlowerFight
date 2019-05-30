@@ -15,7 +15,7 @@ const cors = require('cors');
 const server = http.createServer(app);
 const io = socket.listen(server);
 const client = redis.createClient();
-// client.auth('1q2w3e4r');
+client.auth('1q2w3e4r');
 
 app.use(cors());
 /**
@@ -24,7 +24,7 @@ app.use(cors());
 io.adapter(redisSocket({
     host: 'localhost',
     port: 6379,
-    // password: '1q2w3e4r'
+    password: '1q2w3e4r'
 }));
 
 // mount socket io

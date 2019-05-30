@@ -23,6 +23,7 @@ function getGameLobby() {
     };
 
     function setLobby(lobby) {
+        console.log(lobby);
         return {type: lobbyConstants.LOBBY_SUCCESS, lobbyList: lobby}
     }
 

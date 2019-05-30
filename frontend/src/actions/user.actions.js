@@ -24,7 +24,8 @@ function login(username, password) {
     };
 
     function success(token, username) {
-        return {type: userConstants.LOGIN_SUCCESS, accessToken : token, username: username}
+        console.log('success',token, username);
+        return {type: userConstants.LOGIN_SUCCESS, accessToken : token, current_username: username}
     }
 
     function failure(error) {

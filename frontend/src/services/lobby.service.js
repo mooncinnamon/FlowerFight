@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import {authHeader} from '../util';
 import {lobbyConstants} from "../constants";
@@ -13,29 +12,29 @@ function getlobby() {
         headers: authHeader(),
     };
 
-    console.log('lobbyService','getlobby');
+    console.log('lobbyService', 'getlobby');
     return axios.get(`http://localhost:4000/v1/room/list`, requestOptions)
         .then(response => {
-            console.log('getlobby get',response.data);
+            console.log('getlobby get', response.data);
             return response.data;
         })
         .catch(response => {
-            console.log(response);
+            console.log('getlooby', 'error', response);
         });
 }
 
-function makeGame(user){
+function makeGame(user) {
     const requestOptions = {
         headers: authHeader(),
-        roomId:user.roomId,
-        roomName:user.roomName,
+        roomId: user.roomId,
+        roomName: user.roomName,
         roomMaster: user.roomMaster
     };
-    console.log('lobbyService','makeGame');
+    console.log('lobbyService', 'makeGame');
     return axios.post(`http://localhost:4000/v1/room/make`, requestOptions)
-        .then(response =>{
-            console.log('makeGame','post', response.data)
-        }).catch(err =>{
-            console.log('makeGame','post','err',err);
+        .then(response => {
+            console.log('makeGame', 'post', response.data)
+        }).catch(err => {
+            console.log('makeGame', 'post', 'err', err);
         })
 }
