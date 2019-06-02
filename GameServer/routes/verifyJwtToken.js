@@ -6,6 +6,7 @@ const User = db.user;
 
 verifyToken = (req, res, next) => {
     let token = req.headers['x-access-token'] || req.headers['authorization'];
+    console.log('verify',token, req.headers);
     if (token.startsWith('Bearer ')) {
         // Remove Bearer from string
         token = token.slice(7, token.length);
@@ -34,7 +35,6 @@ verifyToken = (req, res, next) => {
 }
 
 isAdmin = (req, res, next) => {
-
     User.findById(req.userId)
         .then(user => {
             user.getRoles().then(roles => {
@@ -53,7 +53,6 @@ isAdmin = (req, res, next) => {
 }
 
 isPmOrAdmin = (req, res, next) => {
-
     User.findById(req.userId)
         .then(user => {
             user.getRoles().then(roles => {

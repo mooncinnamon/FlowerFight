@@ -1,6 +1,6 @@
 import {userConstants} from '../constants';
 
-let token = localStorage.getItem('accessToken') ? JSON.parse(localStorage.getItem('accessToken')) : null;
+let token = sessionStorage.getItem('accessToken') ? JSON.parse(sessionStorage.getItem('accessToken')) : null;
 
 const initialState = token ? {
     type: userConstants.LOGIN_SUCCESS,

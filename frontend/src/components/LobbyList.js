@@ -1,13 +1,22 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Lobby from './Lobby'
-import { ListGroup } from 'reactstrap';
+import React, {Component} from 'react'
+import {ListGroup, ListGroupItem} from 'reactstrap';
 
-const LobbyList = ({lobbys}) => (
-    <ListGroup>
-        {lobbys.map(lobby => (
-            <Lobby key={lobby.roomMaster} name={lobby.roomName}/>
-        ))}
-    </ListGroup>
-)
+class LobbyList extends Component {
+    render() {
+        const {lobbyList, handleLobbyClick} = this.props;
+        return (
+            <ListGroup>
+                {
+                    lobbyList.map(lobby => (
+                        <ListGroupItem key={lobby.roomId} name={lobby.roomName}
+                                       onClick={handleLobbyClick.bind(this,lobby.roomId)}>
+                            {lobby.roomName}
+                        </ListGroupItem>
+                    ))
+                }
+            </ListGroup>
+        )
+    }
+}
+
 export default LobbyList;

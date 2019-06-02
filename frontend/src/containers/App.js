@@ -4,8 +4,6 @@ import {connect} from 'react-redux';
 import {Jumbotron, Container, Row, Col} from 'reactstrap';
 import {GamePanel, LoginForm, UserInfoForm, Menu} from '../components';
 
-import './css/App.css';
-
 
 class App extends Component {
 
@@ -21,9 +19,10 @@ class App extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    // Session
     componentDidMount() {
         const {dispatch} = this.props;
-        if (localStorage.getItem("accessToken")) {
+        if (sessionStorage.getItem("accessToken")) {
             console.log('user check component');
             dispatch(userActions.checkUser());
         }
@@ -51,32 +50,47 @@ class App extends Component {
         const {username, password} = this.state;
         return (
             <Fragment>
-                <Menu/>
-                <secction className="seMain">
-                    <Container fluid={true}>
-                        <div className="seMain set-bg"
-                             style={{backgroundImage: `url('images/slider-1.jpg')`}}>
+                <GamePanel loggedIn={loggedIn}/>
+                <section className="sign-up">
+                    <div className="container">
+                        <div className="col-md-12">
+                            {loggedIn || sessionStorage.getItem('accessToken') ?
+                                <UserInfoForm current_username={current_username}/> :
+                                <LoginForm
+                                    username={username}
+                                    password={password}
+                                    handleSubmit={this.handleSubmit}
+                                    handleChange={this.handleChange}
+                                />
+                            }
                         </div>
+                    </div>
+                </section>
+                <section className="services">
+                    <div className="container-fluid">
+                            <div className="col-md-3 col-sm-6 col-xs-12" >
+                                <div className="service-item">
+                                    <a href="menu.html">
 
-                        <Row>
-                            <Col xs="6">
-                                <GamePanel loggedIn={loggedIn}/>
-                            </Col>
-                            <Col xs="6">
-                                {loggedIn || localStorage.getItem('accessToken') ?
-                                    <UserInfoForm current_username = {current_username}/> :
-                                    <LoginForm
-                                        username={username}
-                                        password={password}
-                                        handleSubmit={this.handleSubmit}
-                                        handleChange={this.handleChange}
-                                    />
-                                }
-
-                            </Col>
-                        </Row>
-                    </Container>
-                </secction>
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="col-md-3 col-sm-6 col-xs-12">
+                                <div className="service-item">
+                                    <a href="howtoplay.html">
+                                        <img src="img/how2.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="col-md-3 col-sm-6 col-xs-12">
+                                <div className="service-item">
+                                    <a href="create-account.html">
+                                        <img src="img/create.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                    </div>
+                </section>
             </Fragment>
         );
     }

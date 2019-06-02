@@ -3,38 +3,62 @@ import {authHeader} from '../util';
 import {lobbyConstants} from "../constants";
 
 export const lobbyService = {
-    getlobby,
-    makeGame
+    loadLobby,
+    makeGame,
+    insertGame,
 };
 
-function getlobby() {
-    const requestOptions = {
-        headers: authHeader(),
-    };
+const requestOptions = {
+    headers: authHeader(),
+};
 
-    console.log('lobbyService', 'getlobby');
+function loadLobby() {
     return axios.get(`http://localhost:4000/v1/room/list`, requestOptions)
         .then(response => {
-            console.log('getlobby get', response.data);
+            console.log('services', 'lobby', 'success', 'loadLobby', response.data);
             return response.data;
         })
-        .catch(response => {
-            console.log('getlooby', 'error', response);
+        .catch(err => {
+            console.log('services', 'lobby', 'error', 'loadLobby', err);
+            return err;
         });
 }
 
+/**
+ * @param user
+ * @returns {Promise<AxiosResponse<any> | never>}
+ *
+ * "roomId": "841ef590-8412-11e9-9c34-45ad6e6255cd",
+ * "roomName": "TestUser의 방",
+ * "roomMaster": "testuserTemp1",
+ * "roomCreatAt": "2019-06-01T02:11:07.240Z"
+ */
 function makeGame(user) {
-    const requestOptions = {
-        headers: authHeader(),
-        roomId: user.roomId,
-        roomName: user.roomName,
-        roomMaster: user.roomMaster
+    const body = {
+        "roomName": user.roomName,
+        "roomMaster": user.roomMaster
     };
-    console.log('lobbyService', 'makeGame');
-    return axios.post(`http://localhost:4000/v1/room/make`, requestOptions)
+    return axios.post(`http://localhost:4000/v1/room/make`, body, requestOptions)
         .then(response => {
-            console.log('makeGame', 'post', response.data)
+            console.log('makeGame', 'post', response.data);
+            return response.data;
         }).catch(err => {
             console.log('makeGame', 'post', 'err', err);
+            return err;
+        })
+}
+
+function insertGame(user) {
+    const body = {
+        'roomId': user.roomId,
+        'userName': user.name
+    };
+    return axios.post(`http://localhost:4000/v1/room/input`, body, requestOptions)
+        .then(response => {
+            console.log('inputGame', 'post', response.data);
+            return response.data;
+        }).catch(err => {
+            console.log('inputGame', 'post', 'err', err);
+            return err;
         })
 }

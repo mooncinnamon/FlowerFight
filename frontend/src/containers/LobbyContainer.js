@@ -1,51 +1,55 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {lobbyActions} from '../actions';
+import {gameActions, lobbyActions} from '../actions';
 import {LobbyList} from '../components';
 import {ButtonGroup, Button, Container, Col, Row} from 'reactstrap';
+import PropTypes from "prop-types";
 
+/**
+ * Todo : 전체적인 props, state 정리하기
+ * Todo : 리듀서 정리하기
+ */
 
 class LobbyContainer extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            lobbyList: []
-
-        };
-
-        console.log('session Check', localStorage.getItem("accessToken"));
         this.handleClick = this.handleClick.bind(this);
-        this.lobbyClick = this.lobbyClick.bind(this);
+        this.handleLobbyRefresh = this.handleLobbyRefresh.bind(this);
     }
 
 
     componentDidMount() {
-        const {dispatch} = this.props;
-        dispatch(lobbyActions.getGameLobby());
+        this.props.onListRoomList();
     }
 
-    handleClick(e) {
+    handleClick = (e) => {
         e.preventDefault();
-        const {dispatch, history} = this.props;
+        const {username, history} = this.props;
         const users = {
-            roomId: '3',
-            roomName: 'hell',
-            roomMaster: 'mooncinnamon'
+            roomName: username + '의 방',
+            roomMaster: username
         };
-        console.log('make room button Click');
-        dispatch(lobbyActions.makeGame(users, history));
+        this.props.onMakeRoom(users, history);
     }
 
-    lobbyClick(e) {
+    handleLobbyClick = (key, e) => {
         e.preventDefault();
-        const {distpach, history} = this.props;
+        const {username, history} = this.props;
         const users = {
-            roomMaster: 'testuser'
+            roomId: key,
+            name: username
         };
-        console.log('room list click');
-        distpach(lobbyActions.insertGame(users, history));
-    }
+        this.props.onInsertRoom(users, history);
+    };
+
+    handleLobbyRefresh = (e) => {
+        e.preventDefault();
+        this.props.onListRoomList();
+    };
+
+    /**
+     * Todo: 들어가려는 방이 없으면 에러메세지 띄워주기
+     */
 
     render() {
         const {lobbyList} = this.props;
@@ -54,12 +58,15 @@ class LobbyContainer extends Component {
             <Container>
                 <Row>
                     <Col xs={10}>
-                        <LobbyList lobbys={lobbyList}/>
+                        <LobbyList lobbyList={lobbyList} handleLobbyClick={this.handleLobbyClick}/>
                     </Col>
                     <Col xs={2}>
                         <ButtonGroup vertical={true}>
                             <Button onClick={this.handleClick}>
                                 방 만들기
+                            </Button>
+                            <Button onClick={this.handleLobbyRefresh}>
+                                새로고침
                             </Button>
                             <Button>
                                 종료
@@ -72,11 +79,32 @@ class LobbyContainer extends Component {
     }
 }
 
-function mapStateToProps(state) {
+LobbyContainer.propTypes = {
+    onListRoomList: PropTypes.func.isRequired,
+    onMakeRoom: PropTypes.func.isRequired,
+    onInsertRoom: PropTypes.func.isRequired
+};
 
+
+const mapStateToProps = (state) => {
+    const {current_username} = state.authentication;
     return {
-        lobbyList: state.lobby
+        lobbyList: state.lobby,
+        username: current_username
     };
-}
+};
 
-export default connect(mapStateToProps)(LobbyContainer);
+const mapDispatchToProps = (dispatch) => (
+    {
+        onListRoomList: () => {
+            dispatch(lobbyActions.loadGameLobby());
+        },
+        onMakeRoom: (users, history) => {
+            dispatch(lobbyActions.makeGame(users, history));
+        },
+        onInsertRoom: (users, history) => {
+            dispatch(lobbyActions.insertGame(users, history));
+        }
+    }
+);
+export default connect(mapStateToProps, mapDispatchToProps)(LobbyContainer);

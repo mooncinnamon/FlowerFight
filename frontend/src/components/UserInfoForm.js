@@ -12,10 +12,9 @@ export default class UserInfoForm extends Component {
     render() {
         const {current_username} = this.props;
         return (
-            <Container>
+            <div className={"templatemo-container margin-bottom-30"} >
                 <h5>username : {current_username}</h5>
-                <h5>판돈 : 100000</h5>
-            </Container>
+            </div>
         )
     }
 }

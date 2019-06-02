@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {authHeader} from '../util';
-import {userConstants} from "../constants";
 
 export const userService = {
     login,
@@ -8,6 +7,7 @@ export const userService = {
     checkUser
 };
 
+// Session Stroage
 function login(username, password) {
     const requestOptions = {
         headers: {'Content-Type': 'application/json'},
@@ -20,11 +20,13 @@ function login(username, password) {
             console.log('login', response);
             if (response.status === 200) {
                 console.log('user service', response);
-                localStorage.setItem('accessToken', JSON.stringify(response.data));
-                return {token: response.data.token, username: response.data.username};
+                sessionStorage.setItem('accessToken', JSON.stringify(response.data));
+                return {
+                    token: response.data.token,
+                    username: response.data.username
+                };
             }
-        })
-        .catch(response => {
+        }).catch(response => {
             console.log('post error', response);
             logout();
             return Promise.reject(response);
@@ -48,5 +50,5 @@ function checkUser() {
 
 function logout() {
     // remove user from local storage to log user out
-    localStorage.removeItem('accessToken');
+    sessionStorage.removeItem('accessToken');
 }

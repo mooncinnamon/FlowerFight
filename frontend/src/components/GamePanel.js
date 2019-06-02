@@ -18,9 +18,18 @@ class GamePanel extends Component {
         const {clicked, url} = this.state;
         return (
             <Fragment>
-                <Button color="primary" className={"btn-lg"} onClick={() => this.toggleOpened()}>
-                    GameStart
-                </Button>
+                <section className="banner">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-6 col-md-offset-3">
+                                <div className="primary-button">
+                                    <a href="#" class="scroll-link" data-id="book-table"
+                                       onClick={() => this.toggleOpened()}/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 {clicked && this.props.loggedIn &&
                 <NewWindow
                     url={url}
@@ -48,7 +57,7 @@ class GamePanel extends Component {
 }
 
 const features = {
-    width: 1280,
+    width: 1920,
     height: 1280,
     left: 0,
     top: 0,
