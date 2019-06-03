@@ -12,17 +12,21 @@ const requestOptions = {
     headers: authHeader(),
 };
 
+/**
+ * 여기는 Get이다.
+ * @returns {Promise<AxiosResponse<any> | never>}
+ */
 function loadLobby() {
     return axios.get(`http://localhost:4000/v1/room/list`, requestOptions)
         .then(response => {
-            console.log('services', 'lobby', 'success', 'loadLobby', response.data);
+            console.log('services', 'lobby', 'loadLobby', response.data);
             return response.data;
         })
         .catch(err => {
-            console.log('services', 'lobby', 'error', 'loadLobby', err);
+            console.log('services', 'lobby', 'loadLobby', 'error', err);
             return err;
         });
-}
+}find
 
 /**
  * @param user
@@ -33,32 +37,35 @@ function loadLobby() {
  * "roomMaster": "testuserTemp1",
  * "roomCreatAt": "2019-06-01T02:11:07.240Z"
  */
-function makeGame(user) {
+function makeGame(roomname, username) {
     const body = {
-        "roomName": user.roomName,
-        "roomMaster": user.roomMaster
+        "roomName": roomname,
+        "roomMaster": username
     };
+
     return axios.post(`http://localhost:4000/v1/room/make`, body, requestOptions)
         .then(response => {
-            console.log('makeGame', 'post', response.data);
+            console.log('service', 'lobby', 'makeGame', response.data);
             return response.data;
         }).catch(err => {
-            console.log('makeGame', 'post', 'err', err);
+            console.log('service', 'lobby', 'makeGame', 'error', err);
             return err;
         })
 }
 
-function insertGame(user) {
+function insertGame(id, username) {
+
     const body = {
-        'roomId': user.roomId,
-        'userName': user.name
+        'roomId': id,
+        'username': username
     };
+
     return axios.post(`http://localhost:4000/v1/room/input`, body, requestOptions)
         .then(response => {
-            console.log('inputGame', 'post', response.data);
+            console.log('service', 'lobby', 'inputGame', response.data);
             return response.data;
         }).catch(err => {
-            console.log('inputGame', 'post', 'err', err);
+            console.log('service', 'lobby', 'inputGame', 'error', err);
             return err;
         })
 }

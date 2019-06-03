@@ -7,22 +7,21 @@ export const lobbyActions = {
     makeGame
 };
 
+// loadLobby 불러오기
 function loadGameLobby() {
     return dispatch => {
         lobbyService.loadLobby()
-            .then(
-                lobbyList => {
-                    dispatch(setLobby(lobbyList));
-                },
-                error => {
-                    dispatch(failure(error));
+            .then(lobbyList => {
+                    dispatch(success(lobbyList));
                 }
-            )
+            ).catch(error => {
+            dispatch(failure(error))
+        })
     };
 
-    function setLobby(lobby) {
-        console.log('actions', 'lobby', 'success', lobby);
-        return {type: lobbyConstants.LOBBY_SUCCESS, lobbyList: lobby}
+    function success(lobbyList) {
+        console.log('actions', 'lobby', 'success', lobbyList);
+        return {type: lobbyConstants.LOBBY_SUCCESS, lobbyList: lobbyList}
     }
 
     function failure(error) {
@@ -31,55 +30,65 @@ function loadGameLobby() {
     }
 }
 
-function makeGame(user, history) {
+// Room만들기
+function makeGame(roomname, username, history) {
     return dispatch => {
-        lobbyService.makeGame(user)
+        lobbyService.makeGame(roomname, username)
             .then(roomData => {
-                console.log('actions', 'lobby', 'makeGame', 'then', roomData);
-                dispatch(makeSuccess());
+                dispatch(success(roomData));
                 history.replace({
                     pathname: '/game',
-                    state: roomData
                 });
             }).catch(
             err => {
-                console.log(err);
-                dispatch(failuer())
+                dispatch(failure(err))
             });
     }
 
-    function makeSuccess() {
-        return {type: lobbyConstants.GAME_MAKE}
+    function success(data) {
+        console.log('actions', 'lobby', 'makeGame', 'success', data);
+        return {
+            type: lobbyConstants.GAME_INSERT,
+            roomId: data.roomId,
+            roomMaster: data.roomMaster,
+            userList: data.userList
+        }
     }
 
-    function failuer() {
-        return {type: lobbyConstants.GAME_MAKE_FAIL}
+    function failure(error) {
+        console.log('actions', 'lobby', 'makeGame', 'error', error);
+        return {type: lobbyConstants.GAME_INSERT_FAIL, error}
     }
 
 }
 
-function insertGame(user, history) {
+// 방에 들어가기
+function insertGame(id, username, history) {
     return dispatch => {
-        lobbyService.insertGame(user)
-            .then(userData => {
-                console.log('actions', 'lobby', 'inserGame', userData);
-                dispatch(inputSuccess());
+        lobbyService.insertGame(id, username)
+            .then(roomData => {
+                dispatch(success(roomData));
                 history.replace({
-                    pathname: '/game',
-                    state: userData
+                    pathname: '/game'
                 });
             }).catch(
             err => {
-                console.log(err);
-                dispatch(failuer())
+                dispatch(failure(err));
             });
+    };
+
+    function success(data) {
+        console.log('actions', 'lobby', 'inserGame', 'success', data);
+        return {
+            type: lobbyConstants.GAME_INSERT,
+            roomId: data.roomId,
+            roomMaster: data.roomMaster,
+            userList: data.userList
+        }
     }
 
-    function inputSuccess() {
-        return {type: lobbyConstants.GAME_INSERT}
-    }
-
-    function failuer() {
-        return {type: lobbyConstants.GAME_INSERT_FAIL}
+    function failure(error) {
+        console.log('actions', 'lobby', 'inserGame', 'error', error);
+        return {type: lobbyConstants.GAME_INSERT_FAIL, error}
     }
 }

@@ -3,6 +3,8 @@ const router = express.Router();
 const authJwt = require('./verifyJwtToken');
 const date = require('date-utils');
 const uuidV1 = require('uuid/v1');
+const db = require('../config/db.config.js');
+const GameInfo = db.gameInfo;
 
 /*
   Todo : Input Member Socket Room
@@ -52,14 +54,17 @@ const inputUser = (res, key, callback) => {
 
 // 여기서 방 만들고 redis 저장
 router.post('/make', [authJwt.verifyToken], function (req, res, next) {
-    console.log('room', 'making', 'post');
+    // 정렬을 위한 지금 시간
     const clock = new Date();
+    const uuid = uuidV1();
 
+    //인자값 검사사
     if (!req.body["roomName"] || !req.body["roomMaster"]) {
-        res.json("error!");
+        res.json({error: true});
         return
     }
-    const uuid = uuidV1();
+
+    // 인자값 등록
     const member = req.body["roomMaster"];
     const data = {
         'roomId': uuid,
@@ -119,6 +124,18 @@ router.get('/list', [authJwt.verifyToken], function (req, res, next) {
         roomList.sort(custonSort);
         res.send(roomList);
     })
+});
+
+router.get('/test', [authJwt.verifyToken], function (req, res, next) {
+    GameInfo.findOne({
+        where: {username: req.query.username}
+    })
+        .then(info => {
+                console.log(info.money);
+                res.json({money: info.money})
+            }
+        )
+
 });
 
 module.exports = router;

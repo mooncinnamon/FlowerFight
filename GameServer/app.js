@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const http = require('http');
 const socket = require('socket.io');
+
 const redis = require('redis');
 const redisSocket = require('socket.io-redis');
 
@@ -13,6 +14,7 @@ const gameRouter = require('./routes/games');
 
 const app = express();
 const cors = require('cors');
+
 const server = http.createServer(app);
 const io = socket.listen(server);
 const client = redis.createClient();
@@ -48,8 +50,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/', indexRouter);
 app.use('/v1/room', roomRouter);
 app.use('/v1/game', gameRouter);
-// catch 404 and forward to error handler
-
 app.get('*', (req, res, next) => {
     if (req.path.split('/')[1] === 'static') return next();
     res.sendFile(path.join(__dirname + '/public/index.html'));
@@ -133,7 +133,7 @@ io.on('connection', (socket) => {
         socket.leave(roomId, () => {
             console.log(name + ' leave a ' + roomId);
             io.to(socket.roomid).emit('updateUser', socket.roomid, socket.nickname);
-            deleteMember(socket.roomid, socket.nickname ,(count)=>{
+            deleteMember(socket.roomid, socket.nickname, (count) => {
                 console.log('deleteMember', count);
                 if (count) {
                     client.del(socket.roomid);

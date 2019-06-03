@@ -6,30 +6,27 @@ import React, {Component} from 'react';
 export class UserPanel extends Component {
     render() {
         const {
-            name, money, bettingSort
+            username, usermoney
         } = this.props.userInfo;
 
         const {className} = this.props;
         const {handCards} = this.props;
         const {bettingResult} = this.props;
-        console.log('up', handCards, 'name', name, 'bettingResult', bettingResult);
+        console.log('up', handCards, 'name', username, 'bettingResult', bettingResult);
         return (
             <div className={className}>
                 <img></img>
                 <img></img>
                 <img></img>
-                <p>ID : {name}</p>
-                <p>보유 머니 : {money}</p>
+                <p>ID : {username}</p>
+                <p>보유 머니 : {usermoney}</p>
                 <p>패 결과 표시 {
-                    (handCards === undefined) ? ['0a', '0b'] : handCards.cards
+                    (handCards === undefined) ? ['0a', '0b'] : handCards
                 }:</p>
                 <p>베팅 종류
                     {
                         (bettingResult === undefined) ?
-                            'None' :
-                            (bettingResult[name] === -1) ?
-                                'None' :
-                                bettingResult[name]
+                            'None' : bettingResult
                     }
                 </p>
             </div>

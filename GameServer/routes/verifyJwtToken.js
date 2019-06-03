@@ -6,7 +6,7 @@ const User = db.user;
 
 verifyToken = (req, res, next) => {
     let token = req.headers['x-access-token'] || req.headers['authorization'];
-    console.log('verify',token, req.headers);
+    console.log('verify', token, req.headers);
     if (token.startsWith('Bearer ')) {
         // Remove Bearer from string
         token = token.slice(7, token.length);
@@ -18,7 +18,7 @@ verifyToken = (req, res, next) => {
         });
     }
 
-    console.log(jwt.verify(token, 'JWTSuperSecretKey', { algorithms: ['HS512'] }));
+    console.log(jwt.verify(token, 'JWTSuperSecretKey', {algorithms: ['HS512']}));
 
     jwt.verify(token,
         'JWTSuperSecretKey'
@@ -29,10 +29,11 @@ verifyToken = (req, res, next) => {
                     message: 'Fail to Authentication. Error -> ' + err
                 });
             }
+            console.log('iddidid', decoded.id);
             req.decoded = decoded.id;
             next();
         });
-}
+};
 
 isAdmin = (req, res, next) => {
     User.findById(req.userId)
@@ -50,7 +51,7 @@ isAdmin = (req, res, next) => {
                 return;
             })
         })
-}
+};
 
 isPmOrAdmin = (req, res, next) => {
     User.findById(req.userId)
@@ -71,7 +72,7 @@ isPmOrAdmin = (req, res, next) => {
                 res.status(403).send("Require PM or Admin Roles!");
             })
         })
-}
+};
 
 const authJwt = {};
 authJwt.verifyToken = verifyToken;

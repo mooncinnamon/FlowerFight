@@ -1,20 +1,20 @@
 import React, {Component} from "react";
-import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import socketIo from "socket.io-client";
 import {GameBoard} from "../components/GameRoom";
-import {gameActions} from "../actions";
+import {gameActions, gameFinishResult} from "../actions";
 import {Button, ButtonGroup} from 'reactstrap';
 
-let socket;
 
 /**
  * Todo : 웹 소켓 처리하기
  * Todo : 게임 진행하기
  * Todo : GameMaster 바꾸기
  */
+let socket;
 
 class GameRoomContainer extends Component {
+
 
     constructor(props) {
         super(props);
@@ -22,11 +22,7 @@ class GameRoomContainer extends Component {
             response: false,
             endpoint: "ws://localhost:4000",
         };
-        const {location} = this.props;
-        const id = location.state.roomId;
-        const master = location.state.roomMaster;
-        socket = socketIo(this.state.endpoint, {transports: ['websocket']});
-        this.props.onSetRoomId(id, master);
+
 
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handlerCallClick = this.handlerCallClick.bind(this);
@@ -37,37 +33,57 @@ class GameRoomContainer extends Component {
     }
 
     componentDidMount() {
-        const {username, location} = this.props;
-        const roomId = location.state.roomId;
-
+        const {username, roomId} = this.props;
         socket = socketIo(this.state.endpoint, {transports: ['websocket']});
-        this.props.onLoadUserList(roomId);
+        /**
+         *  Socket Event:
+         *  joinRoom : 방에 들어옴
+         *  startGame: 게임이 시작 됨
+         *  updateUser: 유저 정보가 갱신됨
+         *  updateCard: 카드 정보가 갱신됨
+         *  updateBetting: 베팅 정보가 갱신됨
+         *  finish : 게임이 끝남
+         */
+        // 유저가 방에 들어온 경우
         if (typeof username !== 'undefined') {
-            console.log('socket', 'io', 'emit', 'roomId', roomId, 'username', username);
-            socket.emit('joinRoom', roomId, username);
+            console.log('socket', 'io', 'emit', 'roomId', roomId);
+            socket.emit('joinRoom', roomId);
         }
-
-        socket.on('updateUser', (roomId, username) => {
-            console.log('socket', 'io', 'updateUser', 'on', 'roomId', roomId, 'username', username);
+        //gameStart
+        socket.on('startGame', (roomId) => {
+            console.log('socket', 'io', 'startGame', 'on', 'roomId', roomId);
+            this.props.onStart(roomId, username);
+        })
+        // user목록 업데이트
+        socket.on('updateUser', (roomId) => {
+            console.log('socket', 'io', 'updateUser', 'on', 'roomId', roomId);
             this.props.onLoadUserList(roomId);
         });
 
-        socket.on('updateCards', (roomId, username) => {
-            console.log('socket', 'io', 'updateCards', 'on', 'roomId', roomId, 'username', username, 'this', this.props.username);
-            this.props.onLoadUserCards(roomId, this.props.username);
+        // 카드 업데이트
+        socket.on('updateCard', (roomId) => {
+            console.log('socket', 'io', 'updateCard', 'on', 'roomId', roomId);
+            this.props.onLoadUserCards(roomId, username);
         });
 
-        socket.on('betting', (boardMoney, bettingUser, bettingSort, nextUser) => {
-            console.log('socket', 'io', 'betting', 'on', 'boardMoney', boardMoney, 'bettingUser', bettingUser, 'bettingSort', bettingSort, 'nextUser', nextUser);
+        // 베팅 업데이트
+        socket.on('updateBetting', (boardMoney, callMoney, bettingUser, bettingSort, nextUser) => {
+            console.log('socket', 'io', 'betting', 'on',
+                'boardMoney', boardMoney,
+                'bettingUser', bettingUser,
+                'callMoney', callMoney,
+                'bettingSort', bettingSort,
+                'nextUser', nextUser);
+            // 내가 다음 유저면
             if (username === nextUser)
-                this.props.onCheckBetting(roomId, username);
-            this.props.setBoardMoney(boardMoney, bettingUser, bettingSort);
+                this.props.onCheckBettingState(roomId, username);
+            this.props.setBoardMoney(boardMoney, callMoney, bettingUser, bettingSort);
         });
 
-        socket.on('finish', (cardSet, master) => {
-            console.log('socket', 'io', 'finish', 'on', 'roomId', cardSet, 'master', master, 'this', this.props.username);
-            this.props.handlerUpdateMaster(master);
-            this.props.handleFinishBetting();
+        // 종료
+        socket.on('finish', (winUser) => {
+            console.log('socket', 'io', 'finish', 'on', 'winUser', winUser);
+            this.props.handleGameFinish(winUser);
         });
 
     }
@@ -78,8 +94,8 @@ class GameRoomContainer extends Component {
 
     handleOnClick = (e) => {
         e.preventDefault();
-        const {roomId, username, gameMember} = this.props;
-        this.props.onGameStart(roomId, username, gameMember);
+        const {roomId, username} = this.props;
+        this.props.onGameStart(roomId, username);
     };
 
     handleLeaveRoom = (e) => {
@@ -92,31 +108,35 @@ class GameRoomContainer extends Component {
     handlerCallClick = (e) => {
         e.preventDefault();
         const {roomId, username} = this.props;
-        this.props.onCallBetting(roomId, 'Call', username);
+        this.props.onCallBetting(roomId, username);
     };
 
     handleDieClick = (e) => {
         e.preventDefault();
         const {roomId, username} = this.props;
-        this.props.onDieBetting(roomId, 'Die', username);
+        this.props.onDieBetting(roomId, username);
     };
 
     handleHalfClick = (e) => {
         e.preventDefault();
         const {roomId, username} = this.props;
-        this.props.onHalfBetting(roomId, 'Half', username);
+        this.props.onHalfBetting(roomId, username);
     };
 
     handleQuarterClick = (e) => {
         e.preventDefault();
         const {roomId, username} = this.props;
-        this.props.onQuaterBetting(roomId, 'Quarter', username);
+        this.props.onQuaterBetting(roomId, username);
     };
 
 
     render() {
-        const {gameMember, username, roomMaster, buttonPanel, callMoney, start, cards, bettingResult} = this.props;
-        console.log('type', typeof gameMember, 'data', gameMember, 'cards', cards);
+        const {username} = this.props;
+        const {gameMember, roomMaster, start} = this.props;
+        const {buttonPanel} = this.props;
+        const {handCards} = this.props;
+        const {boardMoney, callMoney, userBetting} = this.props;
+        console.log('type', typeof gameMember, 'data', gameMember, 'cards', handCards);
         if (typeof username === 'undefined') {
             return (<h3>Please select any Error</h3>)
         } else {
@@ -127,9 +147,9 @@ class GameRoomContainer extends Component {
                         onClick={this.handleOnClick}>
                         게임시작
                     </Button>
-                    <div>판돈 : {bettingResult.boardMoney}</div>
+                    <div>판돈 : {boardMoney}</div>
                     <div>콜비용 : {callMoney}</div>
-                    <GameBoard users={gameMember} handCards={cards} bettingResult={bettingResult}/>
+                    <GameBoard gameMember={gameMember} handCards={handCards} bettingResult={userBetting}/>
                     <ButtonGroup>
                         <Button disabled={buttonPanel[0]} onClick={this.handlerCallClick}>콜</Button>
                         <Button disabled={buttonPanel[1]} onClick={this.handleDieClick}>다이</Button>
@@ -149,33 +169,38 @@ class GameRoomContainer extends Component {
 
 const mapStateToProps = (state) => {
     const {current_username} = state.authentication;
-    const {roomId, roomMaster, userList} = state.gameInfomation;
-    const {bettingState, start} = state.bettingState;
-    const cards = state.cards;
-    const bettingResult = state.bettingResult;
+    const {roomId, roomMaster, windUser, userList} = state.gameStore;
+    const {start, bettingState} = state.bettingState;
+    const handCards = state.cardStore;
+    const {boardMoney, callMoney, userBetting} = state.bettingStore;
     return {
         roomId: roomId,
         roomMaster: roomMaster,
+        windUser: windUser,
         username: current_username,
         gameMember: userList,
         buttonPanel: bettingState,
         start: start,
-        cards: cards,
-        bettingResult: bettingResult
+        handCards: handCards,
+        boardMoney: boardMoney,
+        callMoney: callMoney,
+        userBetting: userBetting
     }
 };
 
 // 컨테이너 컴포넌트에서 프레젠테이션 컴포넌트로 액션을 보내는 함수
 const mapDispatchToProps = (dispatch) => (
     {
+        // Socket -> |
         onLoadUserList: (id) => {
             dispatch(gameActions.loadUserList(id));
         },
-        onSetRoomId: (id, master) => {
-            dispatch(gameActions.setRoomId(id, master));
+        onGameStart: (id, username) => {
+            dispatch(gameActions.onStart(id, username));
         },
-        onGameStart: (id, username, userList) => {
-            dispatch(gameActions.onStart(id, username, userList));
+        // Socket -> |
+        onStart: (roomId, username) => {
+            dispatch(gameActions.startGame(id, username));
         },
         onLoadUserCards: (id, username) => {
             dispatch(gameActions.loadUserCards(id, username));
@@ -192,55 +217,19 @@ const mapDispatchToProps = (dispatch) => (
         onQuaterBetting: (id, sort, username) => {
             dispatch(gameActions.bettingQuater(id, sort, username));
         },
-        setBoardMoney: (boardMoney, username, userBettingSort) => {
-            dispatch(gameActions.setBettingResult(boardMoney, username, userBettingSort));
+        setBoardMoney: (boardMoney, callMoney, username, userBettingSort) => {
+            dispatch(gameActions.updateBettingResult(boardMoney, callMoney, username, userBettingSort));
         },
-        onCheckBetting: (id, username) => {
-            dispatch(gameActions.onCheckBettiing(id, username));
+        // Socket -> |
+        onCheckBettingState: (id, username) => {
+            dispatch(gameActions.updateBettingState(id, username));
         },
-        handleFinishBetting: () => {
-            dispatch(gameActions.onFinishBetting());
-        },
-        handlerUpdateMaster: (master) => {
-            dispatch(gameActions.updateMaster(master));
+        handleGameFinish: (winUser) => {
+            dispatch(gameActions.gameFinishResult(winUser));
         }
     }
 );
 
-GameRoomContainer.propType = {
-    roomId: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    gameMember: PropTypes.arrayOf(
-        PropTypes.shape({
-                name: PropTypes.string.isRequired,
-                money: PropTypes.number.isRequired
-            }
-        )
-    ).isRequired,
-    buttonPanel: PropTypes.arrayOf(
-        PropTypes.oneOf([0, 1])
-    ).isRequired,
-    onLoadUserList: PropTypes.func.isRequired,
-    onSetRoomId: PropTypes.func.isRequired,
-    boardMoney: PropTypes.number.isRequired,
-    callMoney: PropTypes.number.isRequired,
-    onGameStart: PropTypes.func.isRequired,
-    onLoadUserCards: PropTypes.func.isRequired,
-    cards: PropTypes.array.isRequired,
-    onCallBetting: PropTypes.func.isRequired,
-    onDieBetting: PropTypes.func.isRequired,
-    onHalfBetting: PropTypes.func.isRequired,
-    onQuaterBetting: PropTypes.func.isRequired,
-    setBoardMoney: PropTypes.func.isRequired,
-    onCheckBetting: PropTypes.func.isRequired,
-    handleFinishBetting: PropTypes.func.isRequired,
-    handlerUpdateMaster: PropTypes.func.isRequired
-};
 
-GameRoomContainer.defaultProps = {
-    gameMember: [{name: '', money: 0}],
-    boardMoney: 0,
-    callMoney: 100
-};
 // 디스패치와 상태를 주입하려는 컴포넌트를 감싸줍니다.
 export default connect(mapStateToProps, mapDispatchToProps)(GameRoomContainer);

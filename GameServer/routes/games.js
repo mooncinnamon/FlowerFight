@@ -11,6 +11,111 @@ const basicMoney = 10000;
 const cardPull = ['1a', '1b', '2a', '2b', '3a', '3b', '4a', '4b', '5a', '5b',
     '6a', '6b', '7a', '7b', '8a', '8b', '9a', '9b', '10a', '10b'];
 
+
+
+const cardResult = (a, b) => {
+    const aMon = Number(a.slice(0, -1));
+    const aSor = a.slice(-1);
+
+    const bMon = Number(b.slice(0, -1));
+    const bSor = b.slice(-1);
+
+    if (((aMon === 3 || aMon === 8) && aSor === 'a') && ((bMon === 3 || bMon === 8) && bSor === 'a')) {
+        return 30
+    } else if (((aMon === 1 || aMon === 8) && aSor === 'a') && ((bMon === 1 || bMon === 8) && bSor === 'a')) {
+        return 29
+    } else if (((aMon === 3 || aMon === 1) && aSor === 'a') && ((bMon === 3 || bMon === 1) && bSor === 'a')) {
+        return 28
+    } else if (aMon === 10 && bMon === 10) {
+        return 27
+    } else if (aMon === 9 && bMon === 9) {
+        return 26
+    } else if (aMon === 8 && bMon === 8) {
+        return 25
+    } else if (aMon === 7 && bMon === 7) {
+        return 24
+    } else if (aMon === 6 && bMon === 6) {
+        return 23
+    } else if (aMon === 5 && bMon === 5) {
+        return 22
+    } else if (aMon === 4 && bMon === 4) {
+        return 21
+    } else if (aMon === 3 && bMon === 3) {
+        return 20
+    } else if (aMon === 2 && bMon === 2) {
+        return 19
+    } else if (aMon === 1 && bMon === 1) {
+        return 18
+    } else if ((aMon === 1 && bMon === 2) || (aMon === 2 && bMon === 1)) {
+        return 17
+    } else if ((aMon === 1 && bMon === 4) || (aMon === 4 && bMon === 1)) {
+        return 16
+    } else if ((aMon === 1 && bMon === 9) || (aMon === 9 && bMon === 1)) {
+        return 15
+    } else if ((aMon === 1 && bMon === 10) || (aMon === 10 && bMon === 1)) {
+        return 14
+    } else if ((aMon === 4 && bMon === 10) || (aMon === 10 && bMon === 4)) {
+        return 13
+    } else if ((aMon === 4 && bMon === 6) || (aMon === 6 && bMon === 4)) {
+        return 12
+    } else if ((aMon + bMon) % 10 === 9) {
+        return 11
+    } else if ((aMon + bMon) % 10 === 8) {
+        return 10
+    } else if ((aMon + bMon) % 10 === 7) {
+        return 9
+    } else if ((aMon + bMon) % 10 === 6) {
+        return 8
+    } else if ((aMon + bMon) % 10 === 5) {
+        return 7
+    } else if ((aMon + bMon) % 10 === 4) {
+        return 6
+    } else if ((aMon + bMon) % 10 === 3) {
+        return 5
+    } else if ((aMon + bMon) % 10 === 2) {
+        return 4
+    } else if ((aMon + bMon) % 10 === 1) {
+        return 3
+    } else if ((aMon + bMon) % 10 === 0) {
+        return 2
+    }
+};
+
+// 암행어사 = 'ab' , 땡잡이는 = 'ac', 멍텅구리 구사 = 'ad' 구사 = 'bc', 꽝 = 'ff'
+const speicialCardResult = (a, b) => {
+    const aMon = Number(a.slice(0, -1));
+    const aSor = a.slice(-1);
+
+    const bMon = Number(b.slice(0, -1));
+    const bSor = b.slice(-1);
+
+    if (((aMon === 4 || aMon === 7) && aSor === 'a') && (((bMon === 7 || bMon === 4) ** bSor === 'a'))) {
+        return 'ab'
+    } else if (((aMon === 3 || aMon === 7) && aSor === 'a') && (((bMon === 7 || bMon === 3) ** bSor === 'a'))) {
+        return 'ac'
+    } else if (((aMon === 4 || aMon === 9) && aSor === 'a') && (((bMon === 9 || bMon === 4) ** bSor === 'a'))) {
+        return 'ad'
+    } else if ((aMon === 4 && bMon === 9) || (aMon === 9 && bMon === 4)) {
+        return 'bc'
+    } else {
+        return 'ff'
+    }
+};
+
+// 특족 찾기
+const finalResult = (result, specialArray) => {
+    if (30 > result > 27 && specialArray.some(x => x === 'ab')) {
+        return 'ab';
+    } else if (27 > result > 17 && specialArray.some(x => x === 'ac')) {
+        return 'ac';
+    } else if (28 > result > 17 && specialArray.some(x => x === 'ad')) {
+        return 'ad';
+    } else if (18 > result && specialArray.some(x => x === 'bc')) {
+        return 'bc';
+    } else
+        return result;
+};
+
 const readHashKey = (res, key, callback) => {
     res.redis.hgetall(key, (err, result) => {
         callback(result);
@@ -323,110 +428,6 @@ router.post('/betting', function (req, res, next) {
         });
     });
 });
-
-
-const cardResult = (a, b) => {
-    const aMon = Number(a.slice(0, -1));
-    const aSor = a.slice(-1);
-
-    const bMon = Number(b.slice(0, -1));
-    const bSor = b.slice(-1);
-
-    if (((aMon === 3 || aMon === 8) && aSor === 'a') && ((bMon === 3 || bMon === 8) && bSor === 'a')) {
-        return 30
-    } else if (((aMon === 1 || aMon === 8) && aSor === 'a') && ((bMon === 1 || bMon === 8) && bSor === 'a')) {
-        return 29
-    } else if (((aMon === 3 || aMon === 1) && aSor === 'a') && ((bMon === 3 || bMon === 1) && bSor === 'a')) {
-        return 28
-    } else if (aMon === 10 && bMon === 10) {
-        return 27
-    } else if (aMon === 9 && bMon === 9) {
-        return 26
-    } else if (aMon === 8 && bMon === 8) {
-        return 25
-    } else if (aMon === 7 && bMon === 7) {
-        return 24
-    } else if (aMon === 6 && bMon === 6) {
-        return 23
-    } else if (aMon === 5 && bMon === 5) {
-        return 22
-    } else if (aMon === 4 && bMon === 4) {
-        return 21
-    } else if (aMon === 3 && bMon === 3) {
-        return 20
-    } else if (aMon === 2 && bMon === 2) {
-        return 19
-    } else if (aMon === 1 && bMon === 1) {
-        return 18
-    } else if ((aMon === 1 && bMon === 2) || (aMon === 2 && bMon === 1)) {
-        return 17
-    } else if ((aMon === 1 && bMon === 4) || (aMon === 4 && bMon === 1)) {
-        return 16
-    } else if ((aMon === 1 && bMon === 9) || (aMon === 9 && bMon === 1)) {
-        return 15
-    } else if ((aMon === 1 && bMon === 10) || (aMon === 10 && bMon === 1)) {
-        return 14
-    } else if ((aMon === 4 && bMon === 10) || (aMon === 10 && bMon === 4)) {
-        return 13
-    } else if ((aMon === 4 && bMon === 6) || (aMon === 6 && bMon === 4)) {
-        return 12
-    } else if ((aMon + bMon) % 10 === 9) {
-        return 11
-    } else if ((aMon + bMon) % 10 === 8) {
-        return 10
-    } else if ((aMon + bMon) % 10 === 7) {
-        return 9
-    } else if ((aMon + bMon) % 10 === 6) {
-        return 8
-    } else if ((aMon + bMon) % 10 === 5) {
-        return 7
-    } else if ((aMon + bMon) % 10 === 4) {
-        return 6
-    } else if ((aMon + bMon) % 10 === 3) {
-        return 5
-    } else if ((aMon + bMon) % 10 === 2) {
-        return 4
-    } else if ((aMon + bMon) % 10 === 1) {
-        return 3
-    } else if ((aMon + bMon) % 10 === 0) {
-        return 2
-    }
-};
-
-// 암행어사 = 'ab' , 땡잡이는 = 'ac', 멍텅구리 구사 = 'ad' 구사 = 'bc', 꽝 = 'ff'
-const speicialCardResult = (a, b) => {
-    const aMon = Number(a.slice(0, -1));
-    const aSor = a.slice(-1);
-
-    const bMon = Number(b.slice(0, -1));
-    const bSor = b.slice(-1);
-
-    if (((aMon === 4 || aMon === 7) && aSor === 'a') && (((bMon === 7 || bMon === 4) ** bSor === 'a'))) {
-        return 'ab'
-    } else if (((aMon === 3 || aMon === 7) && aSor === 'a') && (((bMon === 7 || bMon === 3) ** bSor === 'a'))) {
-        return 'ac'
-    } else if (((aMon === 4 || aMon === 9) && aSor === 'a') && (((bMon === 9 || bMon === 4) ** bSor === 'a'))) {
-        return 'ad'
-    } else if ((aMon === 4 && bMon === 9) || (aMon === 9 && bMon === 4)) {
-        return 'bc'
-    } else {
-        return 'ff'
-    }
-};
-
-// 특족 찾기
-const finalResult = (result, specialArray) => {
-    if (30 > result > 27 && specialArray.some(x => x === 'ab')) {
-        return 'ab';
-    } else if (27 > result > 17 && specialArray.some(x => x === 'ac')) {
-        return 'ac';
-    } else if (28 > result > 17 && specialArray.some(x => x === 'ad')) {
-        return 'ad';
-    } else if (18 > result && specialArray.some(x => x === 'bc')) {
-        return 'bc';
-    } else
-        return result;
-};
 
 // 수정사항
 // 전부 콜을 하고 2번째 판에 하프가 안됨

@@ -2,16 +2,16 @@ import {combineReducers} from 'redux';
 import {authentication} from './authentication.reducer';
 import {lobby} from "./lobby.reducer";
 import {token} from './users.reducer';
-import {gameInfomation, bettingState, cards, bettingResult} from './game.reducer';
+import {gameStore, bettingState, cardStore, bettingStore} from './game.reducer';
 
 const rootReducer = combineReducers({
     authentication,
     lobby,
     token,
-    gameInfomation,
+    gameStore,
     bettingState,
-    cards,
-    bettingResult
+    cardStore,
+    bettingStore
 });
 
 export default rootReducer;
