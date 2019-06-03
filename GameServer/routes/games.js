@@ -52,6 +52,12 @@ const nextUser = (res, key, callback) => {
     })
 };
 
+const getHashAllData = (res, key, callback) => {
+    res.redis.hgetall(key, (err, result) => {
+        callback(result);
+    })
+};
+
 const getHashData = (res, key, field, callback) => {
     console.log('list', 'get', 'id', key, 'username', field);
     res.redis.hget(key, field, (err, result) => {
@@ -307,6 +313,109 @@ router.post('/betting', function (req, res, next) {
 });
 
 
+const cardResult = (a, b) => {
+    const aMon = Number(a.slice(0, -1));
+    const aSor = a.slice(-1);
+
+    const bMon = Number(b.slice(0, -1));
+    const bSor = b.slice(-1);
+
+    if (((aMon === 3 || aMon === 8) && aSor === 'a') && ((bMon === 3 || bMon === 8) && bSor === 'a')) {
+        return 30
+    } else if (((aMon === 1 || aMon === 8) && aSor === 'a') && ((bMon === 1 || bMon === 8) && bSor === 'a')) {
+        return 29
+    } else if (((aMon === 3 || aMon === 1) && aSor === 'a') && ((bMon === 3 || bMon === 1) && bSor === 'a')) {
+        return 28
+    } else if (aMon === 10 && bMon === 10) {
+        return 27
+    } else if (aMon === 9 && bMon === 9) {
+        return 26
+    } else if (aMon === 8 && bMon === 8) {
+        return 25
+    } else if (aMon === 7 && bMon === 7) {
+        return 24
+    } else if (aMon === 6 && bMon === 6) {
+        return 23
+    } else if (aMon === 5 && bMon === 5) {
+        return 22
+    } else if (aMon === 4 && bMon === 4) {
+        return 21
+    } else if (aMon === 3 && bMon === 3) {
+        return 20
+    } else if (aMon === 2 && bMon === 2) {
+        return 19
+    } else if (aMon === 1 && bMon === 1) {
+        return 18
+    } else if ((aMon === 1 && bMon === 2) || (aMon === 2 && bMon === 1)) {
+        return 17
+    } else if ((aMon === 1 && bMon === 4) || (aMon === 4 && bMon === 1)) {
+        return 16
+    } else if ((aMon === 1 && bMon === 9) || (aMon === 9 && bMon === 1)) {
+        return 15
+    } else if ((aMon === 1 && bMon === 10) || (aMon === 10 && bMon === 1)) {
+        return 14
+    } else if ((aMon === 4 && bMon === 10) || (aMon === 10 && bMon === 4)) {
+        return 13
+    } else if ((aMon === 4 && bMon === 6) || (aMon === 6 && bMon === 4)) {
+        return 12
+    } else if ((aMon + bMon) % 10 === 9) {
+        return 11
+    } else if ((aMon + bMon) % 10 === 8) {
+        return 10
+    } else if ((aMon + bMon) % 10 === 7) {
+        return 9
+    } else if ((aMon + bMon) % 10 === 6) {
+        return 8
+    } else if ((aMon + bMon) % 10 === 5) {
+        return 7
+    } else if ((aMon + bMon) % 10 === 4) {
+        return 6
+    } else if ((aMon + bMon) % 10 === 3) {
+        return 5
+    } else if ((aMon + bMon) % 10 === 2) {
+        return 4
+    } else if ((aMon + bMon) % 10 === 1) {
+        return 3
+    } else if ((aMon + bMon) % 10 === 0) {
+        return 2
+    }
+};
+
+// 암행어사 = 'ab' , 땡잡이는 = 'ac', 멍텅구리 구사 = 'ad' 구사 = 'bc', 꽝 = 'ff'
+const speicialCardResult = (a, b) => {
+    const aMon = Number(a.slice(0, -1));
+    const aSor = a.slice(-1);
+
+    const bMon = Number(b.slice(0, -1));
+    const bSor = b.slice(-1);
+
+    if (((aMon === 4 || aMon === 7) && aSor === 'a') && (((bMon === 7 || bMon === 4) ** bSor === 'a'))) {
+        return 'ab'
+    } else if (((aMon === 3 || aMon === 7) && aSor === 'a') && (((bMon === 7 || bMon === 3) ** bSor === 'a'))) {
+        return 'ac'
+    } else if (((aMon === 4 || aMon === 9) && aSor === 'a') && (((bMon === 9 || bMon === 4) ** bSor === 'a'))) {
+        return 'ad'
+    } else if ((aMon === 4 && bMon === 9) || (aMon === 9 && bMon === 4)) {
+        return 'bc'
+    } else {
+        return 'ff'
+    }
+};
+
+// 특족 찾기
+const finalResult = (result, specialArray) => {
+    if (30 > result > 27 && specialArray.some(x => x === 'ab')) {
+        return 'ab';
+    } else if (27 > result > 17 && specialArray.some(x => x === 'ac')) {
+        return 'ac';
+    } else if (28 > result > 17 && specialArray.some(x => x === 'ad')) {
+        return 'ad';
+    } else if (18 > result && specialArray.some(x => x === 'bc')) {
+        return 'bc';
+    } else
+        return result;
+};
+
 // 수정사항
 // 전부 콜을 하고 2번째 판에 하프가 안됨
 // 전부 콜을 한 상황에서는 2바퀴 돌아야 하는데 4바퀴 돔
@@ -319,14 +428,54 @@ router.get(`/betting/check`, [authJwt.verifyToken], function (req, res, next) {
     const username = req.query.username;
     const bettingId = id.replace("gameRoom:", "bettingRoom:");
     const userId = id.replace("gameRoom:", "userRoom:");
+    const cardId = id.replace("gameRoom:", "cardRoom:");
 
     res.redis.llen(userId, (err, userCount) => {
         res.redis.hget(bettingId, 'count', (err, result) => {
             checkingFinished(res, bettingId, ['lastHalf', 'round'], username, (isFinish) => {
                 if (isFinish.result) {
-                    res.json({
-                        finish: true,
-                        user_betting: [1, 1, 1, 1]
+                    // 결 과 내 기
+                    const cardResultArray = [];
+                    const specialCardResultArray = [];
+
+                    getHashAllData(res, cardId, (allData) => {
+                        const keySet = Object.keys(allData);
+                        keySet.forEach((el) => {
+                            const cards = allData[el];
+                            const cardList = cards.split(',');
+                            console.log('allData', allData, 'cards', cards, 'cardList', cardList);
+                            cardResultArray.push(cardResult(cardList[0], cardList[1]));
+                            specialCardResultArray.push(speicialCardResult(cardList[0], cardList[1]));
+                        });
+                        // 최댓값 찾기
+                        const result = cardResultArray.reduce((previous, current) => {
+                            return previous > current ? previous : current;
+                        });
+                        // 특수 족보 찾기
+                        const final = finalResult(result, specialCardResultArray);
+                        switch (final) {
+                            case 'ab':
+                                res.json({
+                                    winner: keySet[specialCardResultArray.indexOf('ab')],
+                                    finish: true,
+                                    user_betting: [1, 1, 1, 1]
+                                });
+                                break;
+                            case 'ac':
+                                res.json({
+                                    winner: keySet[specialCardResultArray.indexOf('ac')],
+                                    finish: true,
+                                    user_betting: [1, 1, 1, 1]
+                                });
+                                break;
+                            default:
+                                res.json({
+                                    winner: keySet[cardResultArray.indexOf(final)],
+                                    finish: true,
+                                    user_betting: [1, 1, 1, 1]
+                                });
+                                break;
+                        }
                     });
                 } else {
                     const userN = Number(userCount);
