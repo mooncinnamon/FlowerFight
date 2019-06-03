@@ -179,6 +179,20 @@ function onCheckBettiing(id, username) {
     }
 }
 
+function onFinishBetting() {
+    return {
+        type: gameConstants.GAME_ON_FINISH,
+        finish: true,
+    }
+}
+
+function updateMaster(master){
+    return {
+        type: gameConstants.UPDATE_MASTER,
+        master: master
+    }
+}
+
 export const gameActions = {
     loadUserList,
     setRoomId,
@@ -189,7 +203,9 @@ export const gameActions = {
     bettingHalf,
     bettingQuater,
     setBettingResult,
-    onCheckBettiing
+    onCheckBettiing,
+    onFinishBetting,
+    updateMaster
 };
 
 

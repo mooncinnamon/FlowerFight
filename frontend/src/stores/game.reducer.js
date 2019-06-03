@@ -21,7 +21,10 @@ export function gameInfomation(state = initialState, action) {
             return Object.assign({}, state, {
                 userList: []
             });
-
+        case gameConstants.UPDATE_MASTER:
+            return Object.assign({}, state, {
+                roomMaster: action.master
+            });
         default:
             return state;
     }
@@ -55,6 +58,10 @@ export function bettingState(state = {
             return Object.assign({}, state, {
                 start: !action.finish,
                 bettingState: action.betting
+            });
+        case gameConstants.GAME_ON_FINISH:
+            return Object.assign({}, state, {
+               start: !action.finish
             });
         default:
             return state

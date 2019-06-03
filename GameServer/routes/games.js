@@ -82,8 +82,9 @@ const getUser = (res, id, callback) => {
 };
 
 const checkingFinished = (res, key, field, username, callback) => {
-    console.log('check', 'Finish');
+
     getHashMData(res, key, field, (result) => {
+        console.log('check', 'key', key, 'field', field, 'Finish', result);
         if (result[0] === username)
             if (result[1] === 'round2')
                 callback({
@@ -148,7 +149,16 @@ router.post('/start', [authJwt.verifyToken], function (req, res, next) {
     const cardId = id.replace("gameRoom:", "cardRoom:");
     const bettingId = id.replace("gameRoom:", "bettingRoom:");
 
-    res.redis.lpush(userId, userList);
+    res.redis.hget(id, 'roomMaster', (err, result) => {
+        while (userList[-1] === result) {
+            const user = userList.shift();
+            userList.push(user);
+
+        }
+        res.redis.lpush(userId, userList);
+        console.log('lpush', 'userlit', userList);
+    });
+
 
     checkMaster(res, id, username, (result) => {
         if (result) {
@@ -160,7 +170,6 @@ router.post('/start', [authJwt.verifyToken], function (req, res, next) {
                 console.log('id', id, 'result', result);
                 const userSetStart = [];
                 for (let i = 0; i < userList.length; i++) {
-                    const userDataSet = {};
                     userSetStart[userList[i]] = Number(result[i]) - Number(basicMoney);
                     res.redis.hset(id, userList[i], Number(result[i]) - Number(basicMoney));
                 }
@@ -172,8 +181,7 @@ router.post('/start', [authJwt.verifyToken], function (req, res, next) {
                 console.log('id', id, 'userCards', userCards);
                 setHashMSetData(res, cardId, userCards, () => {
                     //User가 베팅할 수 있는 버튼 띄워주기
-                    res.json(
-                        {
+                    res.json({
                             user_betting: [1, 0, 0, 1]
                         }
                     );
@@ -253,7 +261,7 @@ router.post('/betting', function (req, res, next) {
     // 먼저 판돈을 가져온다.
     // Edit!
     getHashMData(res, bettingId, ['boardMoney', 'callMoney', 'prevMoney', username], (dataSet) => {
-        console.log('user', 'username', 'sort', sort, 'bettingId', bettingId,
+        console.log('user', username, 'sort', sort, 'bettingId', bettingId,
             'betting', dataSet);
 
         const boardMoney = Number(dataSet[0]);
@@ -272,8 +280,8 @@ router.post('/betting', function (req, res, next) {
                 break;
             case 'Die':
                 bettingMoney = 0;
-                // bettingList에서 지우고
                 // 마이너스로 해서 mysql 값 넣기
+                console.log('betting', 'Call', 'bettingMoney', bettingMoney, 'resultBetting', resultBetting);
                 break;
             case 'Half':
                 if (callMoney === 0) {
@@ -304,6 +312,10 @@ router.post('/betting', function (req, res, next) {
 
         setHashMSetData(res, bettingId, resultBetting, () => {
             nextUser(res, userId, (next) => {
+                if (sort === 'Die') {
+                    // bettingList에서 지우고
+                    res.redis.lrem(userId, 1, username);
+                }
                 console.log('user', 'betting', 'next', next);
                 res.json({user_betting: [1, 1, 1, 1], money: boardMoney, callMoney: callMoney});
                 res.io.to(id).emit('betting', boardMoney, username, sort, next);
@@ -439,49 +451,80 @@ router.get(`/betting/check`, [authJwt.verifyToken], function (req, res, next) {
                     const specialCardResultArray = [];
 
                     getHashAllData(res, cardId, (allData) => {
-                        const keySet = Object.keys(allData);
-                        keySet.forEach((el) => {
-                            const cards = allData[el];
-                            const cardList = cards.split(',');
-                            console.log('allData', allData, 'cards', cards, 'cardList', cardList);
-                            cardResultArray.push(cardResult(cardList[0], cardList[1]));
-                            specialCardResultArray.push(speicialCardResult(cardList[0], cardList[1]));
+                        res.redis.lrange(userId, 0, -1, (err, users) => {
+                            console.log('lrange', users, 'allData', allData);
+                            const keySet = Object.keys(allData);
+                            users.forEach((el) => {
+                                const cards = allData[el];
+                                const cardList = cards.split(',');
+                                console.log('allData', allData, 'cards', cards, 'cardList', cardList);
+                                cardResultArray.push(cardResult(cardList[0], cardList[1]));
+                                specialCardResultArray.push(speicialCardResult(cardList[0], cardList[1]));
+                            });
+                            // 최댓값 찾기
+                            const result = cardResultArray.reduce((previous, current) => {
+                                return previous > current ? previous : current;
+                            });
+                            // 특수 족보 찾기
+                            const final = finalResult(result, specialCardResultArray);
+                            console.log('final', final);
+
+                            // 데이터 지우기
+                            res.redis.del(userId);
+                            res.redis.del(cardId);
+                            const bettingData = {
+                                'boardMoney': 0,
+                                'lastHalf': '',
+                                'count': 0,
+                                'callMoney': 0,
+                                'prevMoney': 0,
+                                'round': 'round1'
+                            };
+                            res.redis.hmset(bettingId, bettingData);
+
+                            //아래에서 승자를 roomMaster로 바꿔주기
+                            switch (final) {
+                                case 'ab':
+                                    const abKey = keySet[specialCardResultArray.indexOf('ab')];
+                                    res.redis.hset(id, 'roomMaster', abKey);
+                                    console.log(abKey);
+                                    res.io.to(id).emit('finish', allData, abKey);
+                                    res.json({
+                                        winner: abKey,
+                                        finish: true,
+                                        user_betting: [1, 1, 1, 1]
+                                    });
+                                    break;
+                                case 'ac':
+                                    const acKey = keySet[specialCardResultArray.indexOf('ac')];
+                                    res.redis.hset(id, 'roomMaster', acKey);
+                                    console.log(acKey);
+                                    res.io.to(id).emit('finish', allData, acKey);
+                                    res.json({
+                                        winner: acKey,
+                                        finish: true,
+                                        user_betting: [1, 1, 1, 1]
+                                    });
+                                    break;
+                                default:
+                                    const KKK = keySet[cardResultArray.indexOf(final)];
+                                    res.redis.hset(id, 'roomMaster', KKK);
+                                    console.log(KKK);
+                                    res.io.to(id).emit('finish', allData, KKK);
+                                    res.json({
+                                        winner: KKK,
+                                        finish: true,
+                                        user_betting: [1, 1, 1, 1]
+                                    });
+                                    break;
+                            }
                         });
-                        // 최댓값 찾기
-                        const result = cardResultArray.reduce((previous, current) => {
-                            return previous > current ? previous : current;
-                        });
-                        // 특수 족보 찾기
-                        const final = finalResult(result, specialCardResultArray);
-                        switch (final) {
-                            case 'ab':
-                                res.json({
-                                    winner: keySet[specialCardResultArray.indexOf('ab')],
-                                    finish: true,
-                                    user_betting: [1, 1, 1, 1]
-                                });
-                                break;
-                            case 'ac':
-                                res.json({
-                                    winner: keySet[specialCardResultArray.indexOf('ac')],
-                                    finish: true,
-                                    user_betting: [1, 1, 1, 1]
-                                });
-                                break;
-                            default:
-                                res.json({
-                                    winner: keySet[cardResultArray.indexOf(final)],
-                                    finish: true,
-                                    user_betting: [1, 1, 1, 1]
-                                });
-                                break;
-                        }
                     });
                 } else {
                     const userN = Number(userCount);
                     const counter = Number(result);
                     const half = (counter / userN) + Number((isFinish.round === 'round2') ? 1 : 0);
-                    const quater = ((counter / userN) % 2 + 1) % 2;
+                    const quater = (isFinish.round === 'round2') ? ((counter / userN) % 2 + 1) % 2 : 1;
                     console.log('bettingState', 'round', isFinish.round, 'half', half, 'quater', quater);
                     const bettingState = [0, 0, Math.floor(half % 2), Math.floor(quater)];
                     res.json({

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import socketIo from "socket.io-client";
-import {GameBoard} from "../components";
+import {GameBoard} from "../components/GameRoom";
 import {gameActions} from "../actions";
 import {Button, ButtonGroup} from 'reactstrap';
 
@@ -55,14 +55,21 @@ class GameRoomContainer extends Component {
         socket.on('updateCards', (roomId, username) => {
             console.log('socket', 'io', 'updateCards', 'on', 'roomId', roomId, 'username', username, 'this', this.props.username);
             this.props.onLoadUserCards(roomId, this.props.username);
-        })
+        });
 
         socket.on('betting', (boardMoney, bettingUser, bettingSort, nextUser) => {
             console.log('socket', 'io', 'betting', 'on', 'boardMoney', boardMoney, 'bettingUser', bettingUser, 'bettingSort', bettingSort, 'nextUser', nextUser);
             if (username === nextUser)
                 this.props.onCheckBetting(roomId, username);
             this.props.setBoardMoney(boardMoney, bettingUser, bettingSort);
-        })
+        });
+
+        socket.on('finish', (cardSet, master) => {
+            console.log('socket', 'io', 'finish', 'on', 'roomId', cardSet, 'master', master, 'this', this.props.username);
+            this.props.handlerUpdateMaster(master);
+            this.props.handleFinishBetting();
+        });
+
     }
 
     componentWillUnmount() {
@@ -99,11 +106,13 @@ class GameRoomContainer extends Component {
         const {roomId, username} = this.props;
         this.props.onHalfBetting(roomId, 'Half', username);
     };
+
     handleQuarterClick = (e) => {
         e.preventDefault();
         const {roomId, username} = this.props;
         this.props.onQuaterBetting(roomId, 'Quarter', username);
     };
+
 
     render() {
         const {gameMember, username, roomMaster, buttonPanel, callMoney, start, cards, bettingResult} = this.props;
@@ -115,8 +124,9 @@ class GameRoomContainer extends Component {
                 <div>
                     <Button
                         disabled={gameMember.length === 1 || username !== roomMaster || start}
-                        onClick={this.handleOnClick}
-                    >게임시작</Button>
+                        onClick={this.handleOnClick}>
+                        게임시작
+                    </Button>
                     <div>판돈 : {bettingResult.boardMoney}</div>
                     <div>콜비용 : {callMoney}</div>
                     <GameBoard users={gameMember} handCards={cards} bettingResult={bettingResult}/>
@@ -187,6 +197,12 @@ const mapDispatchToProps = (dispatch) => (
         },
         onCheckBetting: (id, username) => {
             dispatch(gameActions.onCheckBettiing(id, username));
+        },
+        handleFinishBetting: () => {
+            dispatch(gameActions.onFinishBetting());
+        },
+        handlerUpdateMaster: (master) => {
+            dispatch(gameActions.updateMaster(master));
         }
     }
 );
@@ -217,6 +233,8 @@ GameRoomContainer.propType = {
     onQuaterBetting: PropTypes.func.isRequired,
     setBoardMoney: PropTypes.func.isRequired,
     onCheckBetting: PropTypes.func.isRequired,
+    handleFinishBetting: PropTypes.func.isRequired,
+    handlerUpdateMaster: PropTypes.func.isRequired
 };
 
 GameRoomContainer.defaultProps = {
