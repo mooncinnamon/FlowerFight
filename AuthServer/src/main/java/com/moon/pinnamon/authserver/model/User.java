@@ -2,6 +2,7 @@ package com.moon.pinnamon.authserver.model;
 
 import com.moon.pinnamon.authserver.model.audit.DateAudit;
 import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
