@@ -1,9 +1,7 @@
-import React, {Component} from "react";
+import React, {Component, Fragment} from "react";
 import {connect} from "react-redux";
 import socketIo from "socket.io-client";
-import {GameBoard} from "../components/GameRoom";
 import {gameActions, gameFinishResult} from "../actions";
-import {Button, ButtonGroup} from 'reactstrap';
 
 
 /**
@@ -80,10 +78,16 @@ class GameRoomContainer extends Component {
             this.props.setBoardMoney(boardMoney, callMoney, bettingUser, bettingSort);
         });
 
+        //MasterUpdate
+        socket.on('roomMasterUpdate', (NewMaster) => {
+            console.log('newMaster', NewMaster);
+            this.props.updateMaster(NewMaster);
+        });
+
         // 종료
-        socket.on('finish', (winUser) => {
-            console.log('socket', 'io', 'finish', 'on', 'winUser', winUser);
-            this.props.handleGameFinish(winUser);
+        socket.on('finish', (winUser, handCardJson, winMoney) => {
+            console.log('socket', 'io', 'finish', 'on', 'winUser', winUser, 'cardSet', handCardJson, 'winMoney',winMoney);
+            this.props.handleGameFinish(winUser, handCardJson,winMoney);
         });
     }
 
@@ -131,36 +135,338 @@ class GameRoomContainer extends Component {
 
     render() {
         const {username} = this.props;
-        const {gameMember, roomMaster, start} = this.props;
+        const {gameMember, roomMaster, start, windUser, windMoney} = this.props;
         const {buttonPanel} = this.props;
         const {handCards} = this.props;
-        const {boardMoney, callMoney, userBetting} = this.props;
+        const {boardMoney, callMoney, userBetting, userMoney} = this.props;
         console.log('type', typeof gameMember, 'data', gameMember, 'cards', handCards);
         if (typeof username === 'undefined') {
             return (<h3>Please select any Error</h3>)
         } else {
             return (
-                <div>
-                    <Button
-                        disabled={gameMember.length === 1 || username !== roomMaster || start}
-                        onClick={this.handleOnClick}>
-                        게임시작
-                    </Button>
-                    <div>판돈 : {boardMoney}</div>
-                    <div>콜비용 : {callMoney}</div>
-                    <GameBoard gameMember={gameMember} handCards={handCards} bettingResult={userBetting}/>
-                    <ButtonGroup>
-                        <Button disabled={buttonPanel[0]} onClick={this.handlerCallClick}>콜</Button>
-                        <Button disabled={buttonPanel[1]} onClick={this.handleDieClick}>다이</Button>
-                    </ButtonGroup>
-                    <ButtonGroup>
-                        <Button disabled={buttonPanel[2]} onClick={this.handleHalfClick}>하프</Button>
-                        <Button disabled={buttonPanel[3]} onClick={this.handleQuarterClick}>쿼터</Button>
-                    </ButtonGroup>
-                    <Button onClick={this.handleLeaveRoom}>
-                        방 나가기
-                    </Button>
-                </div>
+                <Fragment>
+                    <link rel="stylesheet" href="css/bootstrap2.min.css"/>
+                    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+                    <link rel="stylesheet" href="css/animate.min.css"/>
+                    <link rel="stylesheet" href="css/templatemo-style2.css"/>
+                    <link
+                        href="https://fonts.googleapis.com/css?family=Do+Hyeon|Gaegu|Nanum+Pen+Script|Noto+Serif+KR&display=swap"
+                        rel="stylesheet"/>
+                    <section id="bgbg">
+                        <div className="conainter">
+                            <div className="row">
+                                <div className="col-xs-4">
+                                    <div className="box">
+                                        <div className="row">
+                                            <div className="col-xs-4">
+                                                <div className="box2x">
+                                                    <div className="row">
+                                                        <div className="col-xs-12">
+                                                            {(gameMember[2] === undefined) ?
+                                                                <div className="charbox"/> :
+                                                                <div className="charbox1">
+                                                                </div>}
+                                                        </div>
+                                                        <div className="col-xs-12">
+                                                            <div className="boxname">
+                                                                <p>{(gameMember[2] === undefined) ? "대기중..." : gameMember[2]}</p>
+                                                            </div>
+                                                            <div className="col-xs-12">
+                                                                <div className="boxname">
+                                                                    <p>{(userMoney[gameMember[2]] === undefined) ? "" : userMoney[gameMember[2]]}</p>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-4">
+                                                <div className="box3">
+                                                    <img
+                                                        src={(handCards[gameMember[2]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[2]][0] + ".png"}/>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-4">
+                                                <div className="box4">
+                                                    <img
+                                                        src={(handCards[gameMember[2]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[2]][1] + ".png"}/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-xs-2">
+                                    <div className="result1">
+                                        <div className="row">
+                                            <p>{(userBetting[gameMember[2]] === undefined) ? "" : userBetting[gameMember[2]]}</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div className="col-xs-3">
+                                    <div className="result3">
+                                        <div className="row">
+                                            <p>{(userBetting[gameMember[3]] === undefined) ? "" : userBetting[gameMember[3]]}</p>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div className="col-xs-3 ">
+                                    <div className="boxp5">
+                                        <div className="row">
+                                            <div className="col-xs-4">
+                                                <div className="box2x">
+                                                    <div className="row">
+                                                        <div className="col-xs-12">
+                                                            {(gameMember[3] === undefined) ?
+                                                                <div className="charbox"/> :
+                                                                <div className="charbox5">
+                                                                </div>}
+                                                        </div>
+                                                        <div className="col-xs-12">
+                                                            <div className="boxname">
+                                                                <p>{(gameMember[3] === undefined) ? "대기중..." : gameMember[3]}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-xs-12">
+                                                            <div className="boxname">
+                                                                <p>{(userMoney[gameMember[3]] === undefined) ? "" : userMoney[gameMember[3]]}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="col-xs-4">
+                                                <div className="box3">
+                                                    <img
+                                                        src={(handCards[gameMember[3]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[3]][0] + ".png"}/>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-4">
+                                                <div className="box4">
+                                                    <img
+                                                        src={(handCards[gameMember[3]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[3]][1] + ".png"}/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-xs-4">
+                                    <div className="box">
+                                        <div className="row">
+                                            <div className="col-xs-4">
+                                                <div className="box2x">
+                                                    <div className="row">
+                                                        <div className="col-xs-12">
+                                                            {(gameMember[1] === undefined) ?
+                                                                <div className="charbox"/> :
+                                                                <div className="charbox2">
+                                                                </div>}
+                                                        </div>
+                                                        <div className="col-xs-12">
+                                                            <div className="boxname">
+                                                                <p>{(gameMember[1] === undefined) ? "대기중..." : gameMember[1]}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-xs-12">
+                                                            <div className="boxname">
+                                                                <p>{(userMoney[gameMember[1]] === undefined) ? "" : userMoney[gameMember[1]]}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-4">
+                                                <div className="box3">
+                                                    <img
+                                                        src={(handCards[gameMember[1]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[1]][0] + ".png"}/>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-4">
+                                                <div className="box4">
+                                                    <img
+                                                        src={(handCards[gameMember[1]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[1]][1] + ".png"}/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-xs-5">
+                                    <div className="row">
+                                        <div className="col-xs-1">
+                                            <div className="result1p2">
+                                                <div className="row">
+                                                    <p>{(userBetting[gameMember[1]] === undefined) ? "" : userBetting[gameMember[1]]}</p>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div className="col-xs-10">
+                                            <div className="row">
+                                                <div className="col-xs-12">
+                                                    <div className="mbox">
+                                                        <h3>{boardMoney}</h3>
+                                                    </div>
+                                                </div>
+                                                <div className="col-xs-12">
+                                                    <div className="callbox">
+                                                        <h3>{callMoney}</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div className="col-xs-1">
+                                            <div className="result5">
+                                                <div className="row">
+                                                    <p>{(userBetting[gameMember[4]] === undefined) ? "" : userBetting[gameMember[4]]}</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-xs-3">
+                                    <div className="boxp4">
+                                        <div className="row">
+                                            <div className="col-xs-4">
+                                                <div className="box2x">
+                                                    <div className="row">
+                                                        <div className="col-xs-12">
+                                                            {(gameMember[4] === undefined) ?
+                                                                <div className="charbox"/> :
+                                                                <div className="charbox4">
+                                                                </div>}
+                                                        </div>
+                                                        <div className="col-xs-12">
+                                                            <div className="boxname">
+                                                                <p>{(gameMember[4] === undefined) ? "대기중..." : gameMember[4]}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-xs-12">
+                                                            <div className="boxname">
+                                                                <p>{(userMoney[gameMember[4]] === undefined) ? "" : userMoney[gameMember[4]]}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-4">
+                                                <div className="box3">
+                                                    <img
+                                                        src={(handCards[gameMember[4]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[4]][0] + ".png"}/>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-4">
+                                                <div className="box4">
+                                                    <img
+                                                        src={(handCards[gameMember[4]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[4]][0] + ".png"}/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-xs-4">
+                                    <div className="resultbox">
+                                        <div className="col-xs-12"><p>"{windUser}"</p></div>
+                                        <div className="col-xs-12"><p>{windMoney}</p></div>
+                                        {(gameMember.length > 2 && username === roomMaster && !start) ?
+                                            <div className="col-xs-12">
+                                                <button onClick={this.handleOnClick} className="startbox"/>
+                                            </div> :
+                                            <div></div>
+                                        }
+                                    </div>
+                                </div>
+                                <div className="col-xs-4">
+                                    <div className="boxp3">
+                                        <div className="row">
+                                            <div className="col-xs-4">
+                                                <div className="box2x">
+                                                    <div className="row">
+                                                        <div className="col-xs-12">
+                                                            {(gameMember[0] === undefined) ?
+                                                                <div className="charbox"/> :
+                                                                <div className="charbox3">
+                                                                </div>}
+                                                        </div>
+                                                        <div className="col-xs-12">
+                                                            <div className="boxname">
+                                                                <p>{(gameMember[0] === undefined) ? "대기중..." : gameMember[0]}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-xs-12">
+                                                            <div className="boxname">
+                                                                <p>{(userMoney[gameMember[0]] === undefined) ? "" : userMoney[gameMember[0]]}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-4">
+                                                <div className="box3">
+                                                    <img
+                                                        src={(handCards[gameMember[0]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[0]][0] + ".png"}/>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-4">
+                                                <div className="box4">
+                                                    <img
+                                                        src={(handCards[gameMember[0]] === undefined) ? "images/sp/0.png" : "images/sp/" + handCards[gameMember[0]][1] + ".png"}/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-xs-2">
+                                    <div className="result1p3">
+                                        <div className="row">
+                                            <p>{(userBetting[gameMember[0]] === undefined) ? "" : userBetting[gameMember[0]]}</p>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div className="col-xs-2">
+                                    <div className="buttonbox">
+                                        <div className="row">
+                                            <div className="col-xs-6">
+                                                <button disabled={buttonPanel[0]} className="callbutton"
+                                                        onClick={this.handlerCallClick}/>
+                                            </div>
+                                            <div className="col-xs-6">
+                                                <button disabled={buttonPanel[1]} onClick={this.handleDieClick}
+                                                        className="diebutton"/>
+                                            </div>
+                                            <div className="col-xs-6">
+                                                <button disabled={buttonPanel[3]} onClick={this.handleQuarterClick}
+                                                        className="qtbutton"/>
+                                            </div>
+                                            <div className="col-xs-6">
+                                                <button disabled={buttonPanel[2]} onClick={this.handleHalfClick}
+                                                        className="hfbutton"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </Fragment>
             )
         }
     }
@@ -168,10 +474,10 @@ class GameRoomContainer extends Component {
 
 const mapStateToProps = (state) => {
     const {current_username} = state.authentication;
-    const {roomId, roomMaster, windUser, userList} = state.gameStore;
+    const {roomId, roomMaster, windUser,windMoney, userList} = state.gameStore;
     const {start, bettingState} = state.bettingState;
     const handCards = state.cardStore;
-    const {boardMoney, callMoney, userBetting} = state.bettingStore;
+    const {boardMoney, callMoney, userBetting, userMoney} = state.bettingStore;
     return {
         roomId: roomId,
         roomMaster: roomMaster,
@@ -183,7 +489,9 @@ const mapStateToProps = (state) => {
         handCards: handCards,
         boardMoney: boardMoney,
         callMoney: callMoney,
-        userBetting: userBetting
+        userBetting: userBetting,
+        userMoney: userMoney,
+        windMoney: windMoney
     }
 };
 
@@ -223,8 +531,11 @@ const mapDispatchToProps = (dispatch) => (
         onCheckBettingState: (id, username) => {
             dispatch(gameActions.updateBettingState(id, username));
         },
-        handleGameFinish: (winUser) => {
-            dispatch(gameActions.gameFinishResult(winUser));
+        handleGameFinish: (winUser, handCardJson, winMoney) => {
+            dispatch(gameActions.gameFinishResult(winUser, handCardJson, winMoney));
+        },
+        updateMaster: (newMaster) => {
+            dispatch(gameActions.updateMaster(newMaster));
         }
     }
 );

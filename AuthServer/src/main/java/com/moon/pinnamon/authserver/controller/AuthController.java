@@ -1,6 +1,7 @@
 package com.moon.pinnamon.authserver.controller;
 
 import com.moon.pinnamon.authserver.exception.AppException;
+import com.moon.pinnamon.authserver.model.GameInfo;
 import com.moon.pinnamon.authserver.model.Role;
 import com.moon.pinnamon.authserver.model.RoleName;
 import com.moon.pinnamon.authserver.model.User;
@@ -8,13 +9,13 @@ import com.moon.pinnamon.authserver.payload.ApiResponse;
 import com.moon.pinnamon.authserver.payload.JwtAuthenticationResponse;
 import com.moon.pinnamon.authserver.payload.LoginRequest;
 import com.moon.pinnamon.authserver.payload.SignUpRequest;
+import com.moon.pinnamon.authserver.repository.GameInfoRepository;
 import com.moon.pinnamon.authserver.repository.RoleRepository;
 import com.moon.pinnamon.authserver.repository.UserRepository;
 import com.moon.pinnamon.authserver.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.swing.text.html.parser.Entity;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -45,6 +45,9 @@ public class AuthController {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    GameInfoRepository gameInfoRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -97,6 +100,13 @@ public class AuthController {
         user.setRoles(Collections.singleton(userRole));
 
         User result = userRepository.save(user);
+
+        GameInfo gameInfo = new GameInfo();
+        gameInfo.setId(user.getId());
+        gameInfo.setUsername(user.getUsername());
+        gameInfo.setMoney(100000000);
+
+        gameInfoRepository.save(gameInfo);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")

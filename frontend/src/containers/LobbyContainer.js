@@ -1,9 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
-import {gameActions, lobbyActions} from '../actions';
+import {lobbyActions} from '../actions';
 import {LobbyList} from '../components';
-import {ButtonGroup, Button, Container, Col, Row} from 'reactstrap';
-import PropTypes from "prop-types";
 
 /**
  * Todo : 전체적인 props, state 정리하기
@@ -55,19 +53,44 @@ class LobbyContainer extends Component {
         const {lobbyList} = this.props;
         console.log('LobbyContainer render', lobbyList);
         return (
-            <div>
-
-                <button  onClick={this.handleLobbyRefresh}>새로고침</button>
-
-                    <button onClick={this.handleClick}>방만들기</button>
-
-                <div className="col-xs-12">
-                    <div className="list-type3">
-                        <LobbyList lobbyList={lobbyList} handleLobbyClick={this.handleLobbyClick}/>
+            <Fragment>
+                <link rel="stylesheet" href="css/bootstrap.min.css"/>
+                <link rel="stylesheet" href="css/font-awesome.min.css"/>
+                <link rel="stylesheet" href="css/animate.min.css"/>
+                <link rel="stylesheet" href="css/templatemo-style.css"/>
+                <link rel="stylesheet" href="css/lobby.css"/>
+                <div className="preloader">
+                    <div className="sk-spinner sk-spinner-three-bounce">
+                        <div className="sk-bounce1"></div>
+                        <div className="sk-bounce2"></div>
+                        <div className="sk-bounce3"></div>
                     </div>
                 </div>
-
-            </div>
+                <section id="new">
+                    <div className="conainter">
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="row">
+                                    <div className="col-xs-4">
+                                        <button class="enterbutton" onClick={this.handleLobbyRefresh}/>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <button class="makeroombutton" onClick={this.handleClick}/>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <button type="submit" class="exitrobbybutton"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xs-12">
+                                <div className="list-type3">
+                                    <LobbyList lobbyList={lobbyList} handleLobbyClick={this.handleLobbyClick}/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </Fragment>
         )
     }
 }

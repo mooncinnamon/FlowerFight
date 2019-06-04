@@ -1,8 +1,8 @@
 const env = {
     database: 'flowerfight',
     username: 'root',
-    password: '1q2w3e4r',
-    // password: 'myb822079?',
+    // password: '1q2w3e4r',
+    password: 'myb822079?',
     host: 'localhost',
     dialect: 'mysql',
     pool: {

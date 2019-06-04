@@ -186,7 +186,6 @@ const nextUser = (res, key, callback) => {
 };
 
 const getHashAllData = (res, key, callback) => {
-
     console.log('list', 'getall', 'id', key);
     res.redis.hgetall(key, (err, result) => {
         callback(result);
@@ -315,22 +314,17 @@ router.get(`/user/card`, [authJwt.verifyToken], function (req, res, next) {
         return
     }
 
-
     const cardId = 'cardRoom:' + id;
     const bettingId = 'bettingRoom:' + id;
 
-    getHashAllData(res, cardId, (cards) => {
+    getHashData(res, cardId, username, (cards) => {
         console.log('user', 'username', 'card', cards);
-        const keys = Object.keys(cards);
-        const values = Object.values(cards);
         const cardDeck = {};
         res.redis.hget(bettingId, 'round', (err, result) => {
-            for (let i = 0; i < keys.length; i++) {
-                const cardList = values[i].split(",");
-                if (result === 'round1')
-                    cardList[1] = '0';
-                cardDeck[keys[i]] = cardList;
-            }
+            const cardList = cards.split(",");
+            if (result === 'round1')
+                cardList[1] = '0';
+            cardDeck[username] = cardList;
             console.log('cardDeck', cardDeck);
             res.json(cardDeck);
         });
@@ -414,6 +408,7 @@ router.post('/betting', function (req, res, next) {
                     }
                     console.log('user', 'betting', 'next', next);
                     res.json({bettingState: [1, 1, 1, 1], money: boardMoney, callMoney: callMoney});
+                    // event boardmoney callmoney username bettingsort nextuser
                     res.io.to(id).emit('updateBetting', boardMoney, callMoney, username, sort, next);
                 })
             });
@@ -440,7 +435,8 @@ router.get(`/betting/check`, [authJwt.verifyToken], function (req, res, next) {
     const cardId = "cardRoom:" + id;
 
     res.redis.llen(userId, (err, userCount) => {
-        res.redis.hget(bettingId, 'count', (err, result) => {
+        res.redis.hmget(bettingId, ['count', 'boardMoney'], (err, bettingResult) => {
+            console.log('dominic',bettingResult);
             checkingFinished(res,
                 bettingId,
                 ['lastHalf', 'round'],
@@ -448,85 +444,88 @@ router.get(`/betting/check`, [authJwt.verifyToken], function (req, res, next) {
                 (isFinish) => {
 
                     // 결 과 내 기
-                if (isFinish.result) {
-                    const cardResultArray = [];
-                    const specialCardResultArray = [];
+                    if (isFinish.result) {
+                        const cardResultArray = [];
+                        const specialCardResultArray = [];
+                        const cardDeck = {};
+                        getHashAllData(res, cardId, (allData) => {
+                            res.redis.lrange(userId, 0, -1, (err, users) => {
+                                const keySet = Object.keys(allData);
+                                users.forEach((el, index) => {
+                                    const cards = allData[el];
+                                    const cardList = cards.split(',');
+                                    console.log('allData', allData, 'cards', cards, 'cardList', cardList);
+                                    cardDeck[keySet[index]] = cardList;
+                                    cardResultArray.push(cardResult(cardList[0], cardList[1]));
+                                    specialCardResultArray.push(speicialCardResult(cardList[0], cardList[1]));
+                                });
 
-                    getHashAllData(res, cardId, (allData) => {
-                        res.redis.lrange(userId, 0, -1, (err, users) => {
-                            const keySet = Object.keys(allData);
-                            users.forEach((el) => {
-                                const cards = allData[el];
-                                const cardList = cards.split(',');
-                                console.log('allData', allData, 'cards', cards, 'cardList', cardList);
-                                cardResultArray.push(cardResult(cardList[0], cardList[1]));
-                                specialCardResultArray.push(speicialCardResult(cardList[0], cardList[1]));
+                                // 최댓값 찾기
+                                const result = cardResultArray.reduce((previous, current) => {
+                                    return previous > current ? previous : current;
+                                });
+
+                                // 특수 족보 찾기
+                                const final = finalResult(result, specialCardResultArray);
+                                console.log('winerValue', final);
+
+                                // 데이터 지우기
+                                res.redis.del(userId);
+                                res.redis.del(cardId);
+
+                                res.redis.hmset(bettingId, bettingData);
+                                //아래에서 승자를 roomMaster로 바꿔주기
+
+                                    switch (final) {
+                                        case 'ab':
+                                            const abKey = keySet[specialCardResultArray.indexOf('ab')];
+                                            res.redis.hset(gameId, 'roomMaster', abKey);
+                                            console.log('winUser', abKey, 'all', 'card', cardDeck, bettingResult[1]);
+                                            res.io.to(id).emit('finish', abKey, cardDeck, bettingResult[1]);
+                                            res.json({
+                                                windUser: abKey,
+                                                bettingState: [1, 1, 1, 1]
+                                            });
+                                            break;
+                                        case 'ac':
+                                            const acKey = keySet[specialCardResultArray.indexOf('ac')];
+                                            res.redis.hset(gameId, 'roomMaster', acKey);
+                                            console.log('winUser', acKey, 'all', 'card', cardDeck, bettingResult[1]);
+                                            res.io.to(id).emit('finish', acKey, cardDeck, bettingResult[1]);
+                                            res.json({
+                                                windUser: acKey,
+                                                bettingState: [1, 1, 1, 1]
+                                            });
+                                            break;
+                                        default:
+                                            const KKK = keySet[cardResultArray.indexOf(final)];
+                                            res.redis.hset(gameId, 'roomMaster', KKK);
+                                            console.log('winUser', KKK, 'all', 'card', cardDeck, bettingResult[1]);
+                                            res.io.to(id).emit('finish', KKK, cardDeck,bettingResult[1]);
+                                            res.json({
+                                                windUser: KKK,
+                                                bettingState: [1, 1, 1, 1]
+                                            });
+                                            break;
+                                    }
+                                });
                             });
 
-                            // 최댓값 찾기
-                            const result = cardResultArray.reduce((previous, current) => {
-                                return previous > current ? previous : current;
-                            });
+                    } else {
+                        if (isFinish.round === 'round2')
+                            res.io.to(id).emit('updateCard', id);
+                        const userN = Number(userCount);
+                        const counter = Number(bettingResult[0]);
+                        const half = (counter / userN) + Number((isFinish.round === 'round2') ? 1 : 0);
+                        const quater = (isFinish.round === 'round2') ? ((counter / userN) % 2 + 1) % 2 : 1;
 
-                            // 특수 족보 찾기
-                            const final = finalResult(result, specialCardResultArray);
-                            console.log('winerValue', final);
-
-                            // 데이터 지우기
-                            res.redis.del(userId);
-                            res.redis.del(cardId);
-
-                            res.redis.hmset(bettingId, bettingData);
-                            //아래에서 승자를 roomMaster로 바꿔주기
-                            switch (final) {
-                                case 'ab':
-                                    const abKey = keySet[specialCardResultArray.indexOf('ab')];
-                                    res.redis.hset(gameId, 'roomMaster', abKey);
-                                    console.log('winner', abKey);
-                                    res.io.to(id).emit('finish', abKey);
-                                    res.json({
-                                        windUser: abKey,
-                                        bettingState: [1, 1, 1, 1]
-                                    });
-                                    break;
-                                case 'ac':
-                                    const acKey = keySet[specialCardResultArray.indexOf('ac')];
-                                    res.redis.hset(gameId, 'roomMaster', acKey);
-                                    console.log(acKey);
-                                    res.io.to(id).emit('finish', acKey);
-                                    res.json({
-                                        windUser: acKey,
-                                        bettingState: [1, 1, 1, 1]
-                                    });
-                                    break;
-                                default:
-                                    const KKK = keySet[cardResultArray.indexOf(final)];
-                                    res.redis.hset(gameId, 'roomMaster', KKK);
-                                    console.log(KKK);
-                                    res.io.to(id).emit('finish', KKK);
-                                    res.json({
-                                        windUser: KKK,
-                                        bettingState: [1, 1, 1, 1]
-                                    });
-                                    break;
-                            }
+                        console.log('bettingState', 'round', isFinish.round, 'half', half, 'quater', quater);
+                        const bettingState = [0, 0, Math.floor(half % 2), Math.floor(quater)];
+                        res.json({
+                            bettingState: bettingState
                         });
-                    });
-                } else {
-                    if (isFinish.round === 'round2')
-                        res.io.to(id).emit('updateCard', id);
-                    const userN = Number(userCount);
-                    const counter = Number(result);
-                    const half = (counter / userN) + Number((isFinish.round === 'round2') ? 1 : 0);
-                    const quater = (isFinish.round === 'round2') ? ((counter / userN) % 2 + 1) % 2 : 1;
-
-                    console.log('bettingState', 'round', isFinish.round, 'half', half, 'quater', quater);
-                    const bettingState = [0, 0, Math.floor(half % 2), Math.floor(quater)];
-                    res.json({
-                        bettingState: bettingState
-                    });
-                }
-            });
+                    }
+                });
         });
     })
 });

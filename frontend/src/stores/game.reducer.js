@@ -4,6 +4,7 @@ const initialState = {
     roomId: '',
     roomMaster: '',
     windUser: '',
+    windMoney: 0,
     userList: []
 };
 
@@ -14,17 +15,21 @@ export function gameStore(state = initialState, action) {
             return Object.assign({}, state, {
                 roomId: action.roomId,
                 roomMaster: action.roomMaster,
-                userList:action.userList
+                userList: action.userList
             });
         // 게임 시작
         case gameConstants.START_GAME:
-            return Object.assign({}, state, {
+            return Object.assign({}, initialState, {
                 windUser: ''
             });
         // User 업데이트 (주로 들어올때 혹은 나갈때)
         case gameConstants.GAME_USER_LIST_UPDATE:
             return Object.assign({}, state, {
                 userList: Object.keys(action.userList)
+            });
+        case gameConstants.UPDATE_MASTER:
+            return Object.assign({}, state, {
+                roomMaster: action.newMaster
             });
         case gameConstants.GAME_ROOM_SET:
             return Object.assign({}, state, {
@@ -38,7 +43,8 @@ export function gameStore(state = initialState, action) {
         case gameConstants.GAME_ON_FINISH:
             return Object.assign({}, state, {
                 roomMaster: action.winUser,
-                windUser: action.windUser
+                windUser: action.winUser,
+                windMoney: action.winMoney
             });
         default:
             return state;
@@ -55,13 +61,13 @@ export function bettingState(state = bettingInitialState, action) {
     switch (action.type) {
         //게임을 시작했다.
         case gameConstants.GAME_ON_START_SUCCESS:
-            return Object.assign({}, state,
+            return Object.assign({}, bettingInitialState,
                 {
                     start: true,
                     bettingState: action.betting
                 });
         case gameConstants.START_GAME:
-            return Object.assign({}, state,
+            return Object.assign({}, bettingInitialState,
                 {
                     start: true,
                     bettingState: action.betting
@@ -99,7 +105,7 @@ export function cardStore(state = {}, action) {
         case gameConstants.GAME_USER_CARD_FAILURE:
             return state = {};
         case gameConstants.GAME_ON_FINISH:
-            return state = {};
+            return state = action.handCardJson;
         default:
             return state
     }
@@ -110,7 +116,7 @@ const bettingMoneyInitialState = {
     boardMoney: 0,
     callMoney: 0,
     userMoney: {},
-    userBetting: {}
+    userBetting: {},
 };
 
 export function bettingStore(state = bettingMoneyInitialState, action) {
@@ -121,23 +127,28 @@ export function bettingStore(state = bettingMoneyInitialState, action) {
                 userBetting: action.userMoneyList
             });
         case gameConstants.START_GAME:
-            return Object.assign({}, state,
+            return Object.assign({}, bettingMoneyInitialState,
                 {
                     boardMoney: action.boardMoney
                 });
         case gameConstants.GAME_USER_LIST_UPDATE:
             return Object.assign({}, state, {
-                userList: action.userList
+                userMoney: action.userList
             });
         case gameConstants.BETTING_RESULT:
-            const newState = Object.assign({}, state, {
+            const usetBettingState = {};
+            usetBettingState[action.username] = action.userBettingSort;
+            return Object.assign({}, state, {
                 boardMoney: action.boardMoney,
                 callMoney: action.callMoney,
+                userBetting: Object.assign({}, state.userBetting, usetBettingState)
             });
-            newState[action.username] = action.userBettingSort;
-            return newState;
-        case gameConstants.GAME_ON_FINISH:
-            return bettingMoneyInitialState;
+        case gameConstants.GAME_ON_FINISH :
+            return Object.assign({}, state, {
+                boardMoney:0,
+                callMoney:0,
+                userBetting: {}
+            });
         default:
             return state
     }

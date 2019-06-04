@@ -217,11 +217,22 @@ export function updateBettingResult(boardMoney, callMoney, username, userBetting
 }
 
 // Socket이 직접호출
-export function gameFinishResult(winUser) {
-    console.log('actions', 'game', 'updateBettingResult', 'winUser', winUser);
+export function gameFinishResult(winUser, handCardJson, winMoney) {
+    console.log('actions', 'game', 'updateBettingResult', 'winUser', winUser, 'hand',handCardJson, 'winMoney',winMoney);
     return {
         type: gameConstants.GAME_ON_FINISH,
-        winUser: winUser
+        winUser: winUser,
+        handCardJson: handCardJson,
+        winMoney: winMoney
+    }
+}
+
+//Socket이 직접 호출
+export function updateMaster(newMaster) {
+    console.log('actions', 'game', 'updateBettingResult', 'newMaster', newMaster);
+    return {
+        type: gameConstants.UPDATE_MASTER,
+        newMaster: newMaster
     }
 }
 
@@ -236,7 +247,8 @@ export const gameActions = {
     bettingHalf,
     bettingQuater,
     updateBettingResult,
-    gameFinishResult
+    gameFinishResult,
+    updateMaster
 };
 
 

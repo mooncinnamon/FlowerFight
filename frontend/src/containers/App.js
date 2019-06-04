@@ -49,6 +49,13 @@ class App extends Component {
         const {username, password} = this.state;
         return (
             <Fragment>
+                <link rel="stylesheet" href="css/bootstrap.min.css"/>
+                <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
+                <link rel="stylesheet" href="css/fontAwesome.css"/>
+                <link rel="stylesheet" href="css/hero-slider.css"/>
+                <link rel="stylesheet" href="css/owl-carousel.css"/>
+                <link rel="stylesheet" href="css/templatemo-style.css"/>
+
                 <GamePanel loggedIn={loggedIn}/>
                 <section className="sign-up">
                     <div className="container">
@@ -67,27 +74,27 @@ class App extends Component {
                 </section>
                 <section className="services">
                     <div className="container-fluid">
-                            <div className="col-md-3 col-sm-6 col-xs-12" >
-                                <div className="service-item">
-                                    <a href="menu.html">
+                        <div className="col-md-3 col-sm-6 col-xs-12">
+                            <div className="service-item">
+                                <a href="menu.html">
 
-                                    </a>
-                                </div>
+                                </a>
                             </div>
-                            <div className="col-md-3 col-sm-6 col-xs-12">
-                                <div className="service-item">
-                                    <a href="howtoplay.html">
-                                        <img src="img/how2.png"/>
-                                    </a>
-                                </div>
+                        </div>
+                        <div className="col-md-3 col-sm-6 col-xs-12">
+                            <div className="service-item">
+                                <a href="howtoplay.html">
+                                    <img src="images/main/how2.png"/>
+                                </a>
                             </div>
-                            <div className="col-md-3 col-sm-6 col-xs-12">
-                                <div className="service-item">
-                                    <a href="create-account.html">
-                                        <img src="img/create.png"/>
-                                    </a>
-                                </div>
+                        </div>
+                        <div className="col-md-3 col-sm-6 col-xs-12">
+                            <div className="service-item">
+                                <a href="create-account.html">
+                                    <img src="images/main/create.png"/>
+                                </a>
                             </div>
+                        </div>
                     </div>
                 </section>
                 <footer>

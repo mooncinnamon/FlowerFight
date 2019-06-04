@@ -1,0 +1,582 @@
+/*
+
+Victory Template
+
+http://www.templatemo.com/tm-507-victory
+
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', arial, sans-serif;
+}
+
+body {
+	overflow-x: hidden;
+	background-color: #fff;
+}
+
+ul {
+	list-style: none;
+	margin: 0px;
+}
+
+p {
+	color: #9a9a9a;
+	font-size: 13px;
+	line-height: 24px;
+}
+
+.margin-bottom {margin: 10px 20px 30px 40px;}
+
+.templatemo-create-new {
+	color: #58B4BB;
+	font-size: 18px;
+	font-weight: 300;
+}
+.templatemo-create-new:hover {
+	color: #138892;
+	text-decoration: none;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-group a {	line-height: 34px; }
+
+.control-wrapper {
+	position: relative;
+	padding-left: 30px;
+}
+.control-wrapper label.fa-label {
+	position: absolute;
+	left: 4px;
+	top: 6px;
+}
+
+.templatemo-container {
+	background-color: rgba(255,255,255,0.8);
+	border: 1px solid #dedede;
+	border-radius: 8px;
+	margin: 0 auto;
+	padding: 30px;
+}
+
+.templatemo-login-form-1 { max-width: 500px; 
+                        min-height:300px;}
+.templatemo-login-form-1 a { color: gray; }
+.templatemo-login-form-1 a:hover {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+.templatemo-create-new {
+	color: #58B4BB;
+	font-size: 18px;
+	font-weight: 300;
+}
+.templatemo-create-new:hover {
+	color: #138892;
+	text-decoration: none;
+}
+
+.primary-button a {
+	display: inline-block;
+    border-radius: 50px;
+	background-color: #fffffff;
+    width: 255px;
+    height: 255px;
+    -moz-border-radius: 140px;
+    -webkit-border-radius: 140px;
+	color: #fff;  <!--/글씨색-->
+	/*font-size: 20px;
+	text-transform: uppercase;
+	font-weight: 500;
+	padding: 12px 20px;
+	border-radius: 3px;
+	text-decoration: none;*/
+	letter-spacing: 10px;
+    background-image: url(../images/main/gs4.png);
+    
+}
+
+.primary-white-button a {
+	display: inline-block;
+	background-color: #fff;
+	color: #f2745f;
+	font-size: 13px;
+	text-transform: uppercase;
+	font-weight: 500;
+	padding: 12px 20px;
+	border-radius: 3px;
+	text-decoration: none;
+	letter-spacing: 0.5px;
+}
+
+.border-button a {
+	display: inline-block;
+	background-color: transparent;
+	color: #fff;
+	font-size: 13px;
+	text-transform: uppercase;
+	font-weight: 500;
+	padding: 12px 20px;
+	border-radius: 3px;
+	text-decoration: none;
+	letter-spacing: 0.5px;
+	border: 1px solid #fff;
+}
+
+
+.header {
+    width: 100%;
+    padding: 0;
+    z-index: 10000;
+    transition: all 0.2s ease-in-out;
+    background-color: #eaf0ff;  
+    text-align: center;
+}
+
+.navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a {
+    text-shadow: none;
+}
+
+.navbar-brand {
+	font-family: 'Spectral', serif;
+	font-size: 44px;
+	color: #121212;
+	text-align: center;
+	width: 100%;
+	border-bottom: 1px solid #d8deed;
+	position: relative;
+    
+	background-image: url(../images/main/th3.png);
+	background-repeat: no-repeat;
+	background-size: auto;
+	background-position: center center;
+    
+	padding: 40px 0px;
+	height: auto!important;
+}
+
+#main-nav {
+	padding: 15px 0px;
+	float: right;
+    position:relative;
+    left:-50%;
+    text-align: left;
+}
+
+.nav {
+	list-style:none;
+    position:relative;
+    left:50%;
+}
+
+.navbar-nav li {
+	margin: 0px 20px;
+}
+
+.navbar-nav li a {
+	font-family: 'Roboto', sans-serif;
+	font-size: 13px;
+	text-transform: uppercase;
+	color: #363e50!important;
+	letter-spacing: 0.5px;
+}
+
+.header.active {
+    background-color: #eaf0ff;
+}
+.navbar-inverse {
+	background-image: none;
+	background-color: transparent;
+}
+.header .navbar {
+    margin: 0;
+    border: none;
+}
+.navbar-inverse .navbar-toggle {
+	margin-top: 22px;
+    border-color: #f2745f;
+    background-color: #f2745f;
+}
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+	background-color: #f2745f;
+}
+bootstrap.min.css:5
+.navbar-toggle {
+    position: relative;
+    float: right;
+    padding: 9px 10px;
+    margin-top: 15px!important;
+    margin-right: 15px;
+    margin-bottom: 8px;
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+
+.banner {
+	padding: 20px 0px;
+	background-image: url(../images/main/banners.png);
+	background-repeat: no-repeat;
+	background-size: auto;
+	background-position: center center;
+	text-align: center;
+}
+
+.banner h4 {
+	margin-top: 0px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 700;
+	font-size: 15px;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.banner h2 {
+	font-family: 'Spectral', serif;
+	font-size: 44px;
+	font-weight: 600;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+.banner p {
+	color: #fff;
+	font-size: 14px;
+}
+
+.banner .primary-button {
+	margin-top: 30px;
+}
+
+
+section.services {
+
+
+    padding: 20px 0px;
+	background-image: url(../images/main/th2.png);
+	background-repeat: no-repeat;
+	background-size: auto;
+	background-position: center center;
+	text-align: center;
+    padding-bottom: 60px;
+    margin: 0 auto;
+}
+
+.services .service-item  a {
+	text-decoration: none;
+}
+
+.services .service-item {
+	text-align: center;
+}
+
+.services .service-item img {
+	max-width: 100%;
+	overflow: hidden;
+	border: 10px solid #eaf0ff;
+	border-radius: 50%;
+}
+
+.services .service-item h4 {
+	margin-top: 20px;
+	font-size: 22px;
+	color: #121212;
+	font-family: 'Spectral', serif;
+	font-weight: 600;
+	margin-bottom: 0px;
+}
+
+
+
+
+
+section.sign-up {
+	padding: 10px 0px;
+	background-image: url(../images/main/signup-bg8.png);
+	background-repeat: no-repeat;
+	background-size: auto;
+	background-position: center center;
+	text-align: center;
+}
+
+
+.sign-up .heading h2 {
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 40px;
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: #fff;
+}
+
+.sign-up button {
+	margin-left: -30px;
+	display: inline-block;
+	background-color: transparent;
+	color: #fff!important;
+	font-size: 13px;
+	text-transform: uppercase;
+	font-weight: 500;
+	padding: 12px 20px;
+	border-radius: 3px;
+	text-decoration: none;
+	letter-spacing: 0.5px;
+	border: 1px solid #fff;
+}
+
+.sign-up input {
+	margin-right: -30px;
+	height: 44px;
+	border: 3px;
+	background-color: rgba(250, 250, 250, 0.9);
+	color: #5a5a5a!important;
+	box-shadow: none!important;
+	outline: none!important;
+}
+
+
+
+footer {
+	background-color: #363e50;
+	line-height: 130px;
+	text-align: center;
+}
+
+footer p {
+	line-height: 120px;
+	color: #fff;
+	margin-top: 5px;
+}
+
+footer p em {
+	font-style: normal;
+	color: #f2745f;
+	font-weight: 500;
+}
+
+footer ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+footer ul li {
+	display: inline-block;
+	margin: 0px 5px;
+}
+
+footer ul li i {
+	width: 36px;
+	height: 36px;
+	display: inline-block;
+	text-align: center;
+	line-height: 36px!important;
+	background-color: #fff;
+	border-radius: 50%;
+	color: #363e50;
+	transition: all 0.5s;
+}
+
+footer ul li i:hover {
+	background-color: #f2745f;	
+}
+
+
+
+@media (max-width: 991px) {
+	.contact-info {
+		margin-top: 80px;
+	}
+	.cook-delecious .first-image {
+		margin-right: 0px;
+		margin-top: 0%;
+		padding: 0px 10%;
+	}
+	.cook-delecious .second-image {
+		margin-left: 0px;
+		margin-top: 0%;
+		padding: 0px 10%;
+	}
+	.services .service-item {
+		margin-bottom: 30px;
+		margin-top: 30px;
+	}
+	.right-info {
+		height: auto;
+		background-color: #fff;
+		margin-left: 0px;
+		padding: 30px;
+	}
+	.right-info button {
+		margin-top: 30px;
+	}
+	.blog-post img {
+		width: 100%;
+		overflow: hidden;
+	}
+	.blog-post {
+		margin-bottom: 30px;
+	}
+	.blog-post .right-content {
+		background-color: #fff;
+		width: 100%;
+		float: none;
+		padding: 20px;
+	}
+	.sign-up button {
+		margin-left: 0px;
+		margin-top: 20px;
+	}
+	footer {
+		background-color: #363e50;
+		line-height: 40px;
+		text-align: center;
+	}
+
+	footer p {
+		line-height: 60px;
+		color: #fff;
+		margin-top: 5px;
+	}
+	.breakfast-menu-content .left-image {
+		margin: -30px 0px 30px -30px;
+	}
+	.lunch-menu-content .left-image {
+		margin: -30px 0px -30px -30px;
+	}
+	.lunch-menu-content .owl-pagination {
+	  padding-bottom: 60px;
+	}
+	.dinner-menu-content .left-image {
+		margin: -30px 0px 30px -30px;
+	}
+	.page-heading p {
+		padding: 0px 5%;
+
+	}
+}
+
+@media (max-width: 768px) {
+	.navbar-toggle {
+	    position: relative;
+	    float: none;
+	    padding: 9px 10px;
+	    margin-top: 20px!important;
+	    margin-right: 0px;
+	    margin-bottom: 20px;
+	    background-color: transparent;
+	    background-image: none;
+	    border: 1px solid transparent;
+	    border-radius: 4px;
+	}
+    #main-nav {
+		padding: 0px 0px;
+		float: none;
+	    position: relative;
+	    left: 0%;
+	    text-align: center;
+	    overflow: hidden;
+	    background-color: rgba(250, 250, 250, 0.5);
+	    margin: 0px -15px;
+	    border-top: none;
+	}
+	.nav {
+		list-style:none;
+	    position:relative;
+	    left: 0%;
+	    overflow: hidden;
+	}
+	.navbar-nav li {
+		border-bottom: 1px solid #d8deed;
+		padding: 15px 0px;
+	}
+	.navbar-nav li:last-child {
+		border-bottom: none;
+	}
+	.cook-delecious .first-image {
+		margin-right: 0px;
+		margin-top: 0%;
+		padding: 0px 10%;
+	}
+	.cook-delecious .second-image {
+		margin-left: 0px;
+		margin-top: 0%;
+		padding: 0px 10%;
+	}
+	.services .service-item {
+		margin-bottom: 30px;
+		margin-top: 30px;
+	}
+	.right-info {
+		height: auto;
+		background-color: #fff;
+		margin-left: 0px;
+		padding: 30px;
+	}
+	.right-info select {
+		margin-top: 30px;
+	}
+	.right-info select.person {
+		margin-top: 0px;
+	}
+	.right-info button {
+		margin-top: 30px;
+	}
+	.blog-post img {
+		width: 100%;
+		overflow: hidden;
+	}
+
+	.blog-post {
+		margin-bottom: 30px;
+	}
+
+	.blog-post .right-content {
+		background-color: #fff;
+		width: 100%;
+		float: none;
+		padding: 20px;
+	}
+	.sign-up button {
+		margin-left: 0px;
+		margin-top: 20px;
+	}
+	footer {
+		background-color: #363e50;
+		line-height: 40px;
+		text-align: center;
+	}
+
+	footer p {
+		line-height: 60px;
+		color: #fff;
+		margin-top: 5px;
+	}
+	.breakfast-menu-content .left-image {
+		margin: -30px 0px 30px -30px;
+	}
+	.lunch-menu-content .left-image {
+		margin: -30px 0px -30px -30px;
+	}
+	.dinner-menu-content .left-image {
+		margin: -30px 0px 30px -30px;
+	}
+	.page-heading p {
+		padding: 0px 5%;
+
+	}
+	.contact-info {
+		margin-top: 80px;
+	}
+}
+@media (max-width: 480px) {
+
+}

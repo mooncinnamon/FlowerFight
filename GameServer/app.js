@@ -85,7 +85,7 @@ const checkMaster = (key, user, callback) => {
 const updateMaster = (key, user, callback) => {
     client.hset(key, 'roomMaster', user, (err, result) => {
         console.log('updateMaster', result);
-        callback(false);
+        callback();
     })
 };
 
@@ -95,17 +95,19 @@ const deleteMember = (key, user, callback) => {
         const gameId = "gameRoom:" + key;
         console.log('deleteMember', 'gameId', gameId, 'user', user);
         client.hdel(gameId, user, () => {
-            countMember(key, (count) => {
+            countMember(gameId, (count) => {
                 if (count <= 4) {
-                    callback(true);
+                    callback({NoUser:true, RoomMaster:false, NewMaster:undefined});
                 } else {
                     console.log('user', user, 'roomMaster', roomMaster);
                     if (roomMaster === user)
-                        getUser(key, (newMaster) => {
-                            updateMaster(key, newMaster, callback);
+                        getUser(gameId, (newMaster) => {
+                            updateMaster(gameId, newMaster, ()=> {
+                                callback({NoUser:false, RoomMaster:true , NewMaster:newMaster});
+                            });
                         });
                     else
-                        callback(false);
+                        callback({NoUser:false, RoomMaster:false, NewMaster:undefined});
                 }
             })
         });
@@ -122,13 +124,15 @@ io.on('connection', (socket) => {
             io.to(socket.roomid).emit('updateUser', socket.roomid, socket.nickname);
             deleteMember(socket.roomid, socket.nickname, (ifZero) => {
                 console.log('deleteMember', ifZero);
-                if (ifZero) {
+                if (ifZero.NoUser) {
                     const gameId = "gameRoom:" + socket.roomid;
                     const cardId = "cardRoom:" + socket.roomid;
                     const bettingId = "bettingRoom:" + socket.roomid;
                     const userId = "userRoom:" + socket.roomid;
                     client.del(gameId, cardId, bettingId, userId);
                 }
+                if(ifZero.RoomMaster)
+                    io.to(socket.roomid).emit('roomMasterUpdate', ifZero.NewMaster);
             })
         }
     });

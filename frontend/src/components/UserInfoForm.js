@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import {Container, Row, Col} from 'reactstrap';
-import {userActions} from "../actions";
 
 export default class UserInfoForm extends Component {
     constructor(props) {
