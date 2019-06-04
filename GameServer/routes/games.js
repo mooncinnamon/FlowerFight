@@ -10,8 +10,14 @@ const authJwt = require('./verifyJwtToken');
 const basicMoney = 10000;
 const cardPull = ['1a', '1b', '2a', '2b', '3a', '3b', '4a', '4b', '5a', '5b',
     '6a', '6b', '7a', '7b', '8a', '8b', '9a', '9b', '10a', '10b'];
-
-
+const bettingData = {
+    'boardMoney': 0,
+    'lastHalf': '',
+    'count': 0,
+    'callMoney': 0,
+    'prevMoney': 0,
+    'round': 'round1'
+};
 
 const cardResult = (a, b) => {
     const aMon = Number(a.slice(0, -1));
@@ -116,6 +122,26 @@ const finalResult = (result, specialArray) => {
         return result;
 };
 
+// 카드 썩기
+function shuffle(array) {
+    let currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+
 const readHashKey = (res, key, callback) => {
     res.redis.hgetall(key, (err, result) => {
         callback(result);
@@ -131,19 +157,20 @@ const checkMaster = (res, key, user, callback) => {
 
 const setCardSet = (userList, deck, callback) => {
     const userCards = {};
-    userList.forEach((item, index) => {
-        userCards[item] = [];
-        userCards[item].push(deck.pop());
-        userCards[item].push(deck.pop());
-        if (index === userList.length - 1)
-            callback(userCards);
+    userList.forEach((item) => {
+        const cards = [];
+        cards.push(deck.pop());
+        cards.push(deck.pop());
+        userCards[item] = cards.toString();
     });
+    console.log('setCardSet', userCards);
+    callback(userCards);
 };
 
 
 // Hash Mset
 const setHashMSetData = (res, key, data, callback) => {
-    console.log('betting', 'basic', 'key', key, 'data', data);
+    console.log('hash', 'key', key, 'data', data);
     res.redis.hmset(key, data, () => {
         callback();
     });
@@ -152,12 +179,15 @@ const setHashMSetData = (res, key, data, callback) => {
 const nextUser = (res, key, callback) => {
     res.redis.rpoplpush(key, key, () => {
         res.redis.lindex(key, -1, (err, result) => {
+            console.log(result);
             callback(result)
         })
     })
 };
 
 const getHashAllData = (res, key, callback) => {
+
+    console.log('list', 'getall', 'id', key);
     res.redis.hgetall(key, (err, result) => {
         callback(result);
     })
@@ -180,14 +210,12 @@ const getHashMData = (res, key, field, callback) => {
 };
 
 const getUser = (res, id, callback) => {
-    console.log('cards', 'get', 'user',);
     res.redis.hkeys(id, (err, results) => {
         callback(results);
     })
 };
 
 const checkingFinished = (res, key, field, username, callback) => {
-
     getHashMData(res, key, field, (result) => {
         console.log('check', 'key', key, 'field', field, 'Finish', result);
         if (result[0] === username)
@@ -211,95 +239,69 @@ const checkingFinished = (res, key, field, username, callback) => {
     });
 };
 
-// 카드 썩기
-function shuffle(array) {
-    let currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-}
-
 // 게임 시작 시, 정보 저장 (카드 초기화 및, 손패 분배) 이후 소켓
 router.post('/start', [authJwt.verifyToken], function (req, res, next) {
-    console.log('game', 'start', 'list', req.body);
-
-    let id = req.body.roomId;
-    const username = req.body.username;
-    const userList = req.body.userList.map(item => item.name);
-
-    if (!id || !username || userList.length < 2) {
+    // 인자값 검사자
+    if (!req.body['roomId'] || !req.body['username'] || req.body['userList'].length < 2) {
         res.json("error!");
         return
     }
 
-    if (!id.startsWith('gameRoom:')) {
-        id = 'gameRoom:' + id;
-    }
+    // 인자 값 만들기
+    let id = req.body.roomId;
+    const username = req.body.username;
+    const userList = req.body.userList;
 
-    console.log('start', 'id', id, 'un', username, 'ul', userList);
+    const gameId = "gameRoom:" + id;
+    const userId = "userRoom:" + id;
+    const cardId = "cardRoom:" + id;
+    const bettingId = "bettingRoom:" + id;
 
-    const userId = id.replace("gameRoom:", "userRoom:");
-    const cardId = id.replace("gameRoom:", "cardRoom:");
-    const bettingId = id.replace("gameRoom:", "bettingRoom:");
-
-    res.redis.hget(id, 'roomMaster', (err, result) => {
+    console.log('id', id, 'username', username, 'userList', userList);
+    // roomMaster가 1번 유저가 되도록
+    res.redis.hget(gameId, 'roomMaster', (err, result) => {
         while (userList[-1] === result) {
             const user = userList.shift();
             userList.push(user);
-
         }
         res.redis.lpush(userId, userList);
-        console.log('lpush', 'userlit', userList);
-    });
 
+        checkMaster(res, gameId, username, (result) => {
+            // Msaster인지 체그
+            if (result) {
+                const shuffleDeck = shuffle(cardPull);
+                console.log('id', cardId, 'deck', shuffleDeck);
 
-    checkMaster(res, id, username, (result) => {
-        if (result) {
-            const shuffleDeck = shuffle(cardPull);
-            console.log('id', cardId, 'deck', shuffleDeck);
-
-            // 시작금 깍고 시작하기
-            res.redis.hmget(id, userList, (err, result) => {
-                console.log('id', id, 'result', result);
-                const userSetStart = [];
-                for (let i = 0; i < userList.length; i++) {
-                    userSetStart[userList[i]] = Number(result[i]) - Number(basicMoney);
-                    res.redis.hset(id, userList[i], Number(result[i]) - Number(basicMoney));
-                }
-            });
-            // boardMoney 업데이트
-            res.redis.hset(bettingId, 'boardMoney', Number(userList.length) * Number(basicMoney));
-            //Card 뿌리기
-            setCardSet(userList, shuffleDeck, (userCards) => {
-                console.log('id', id, 'userCards', userCards);
-                setHashMSetData(res, cardId, userCards, () => {
-                    //User가 베팅할 수 있는 버튼 띄워주기
-                    res.json({
-                            user_betting: [1, 0, 0, 1]
-                        }
-                    );
-                    res.io.to(id).emit('updateCards', id, username);
-                })
-            });
-        } else {
-            res.json({user_betting: [1, 1, 1, 1]})
-        }
+                // 시작금 깍고 시작하기
+                res.redis.hmget(gameId, userList, (err, result) => {
+                    console.log('id', id, 'result', result);
+                    // const userSetStart = {};
+                    for (let i = 0; i < userList.length; i++) {
+                        // userSetStart[userList[i]] = Number(result[i]) - Number(basicMoney);
+                        res.redis.hset(gameId, userList[i], Number(result[i]) - Number(basicMoney));
+                    }
+                });
+                // boardMoney 업데이트
+                res.redis.hset(bettingId, 'boardMoney', Number(userList.length) * Number(basicMoney));
+                //Card 뿌리기
+                setCardSet(userList, shuffleDeck, (userCards) => {
+                    console.log('id', id, 'userCards', userCards);
+                    setHashMSetData(res, cardId, userCards, () => {
+                        //User가 베팅할 수 있는 버튼 띄워주기
+                        res.json({
+                            bettingState: [1, 0, 0, 1]
+                        });
+                        res.io.to(id).emit('updateCard', id);
+                    })
+                });
+            } else {
+                res.json({bettingState: [1, 1, 1, 1]})
+            }
+        });
     });
 });
 
-
+// || 끝난 듯
 // 손패 목록 불러오기 (자신을 제외한 나머지 사람들은 0a,0b)
 router.get(`/user/card`, [authJwt.verifyToken], function (req, res, next) {
     console.log('game', 'user', 'card', req.query);
@@ -313,39 +315,32 @@ router.get(`/user/card`, [authJwt.verifyToken], function (req, res, next) {
         return
     }
 
-    if (!id.startsWith('gameRoom:')) {
-        id = 'gameRoom:' + id;
-    }
-    const cardId = id.replace("gameRoom:", "cardRoom:");
-    getUser(res, cardId, (userList) => {
-        const returnJson = [];
-        getHashData(res, cardId, username, (cards) => {
-            console.log('user', 'username', 'card', cards);
-            userList.map((e) => {
-                if (e === username)
-                    returnJson.push({
-                        "name": username,
-                        "cards": cards.split(","),
-                        "state": 0
-                    });
-                else
-                    returnJson.push({
-                        name: e,
-                        cards: ['0a', '0b'],
-                        state: 0
-                    });
-            });
-            res.json(returnJson);
+
+    const cardId = 'cardRoom:' + id;
+    const bettingId = 'bettingRoom:' + id;
+
+    getHashAllData(res, cardId, (cards) => {
+        console.log('user', 'username', 'card', cards);
+        const keys = Object.keys(cards);
+        const values = Object.values(cards);
+        const cardDeck = {};
+        res.redis.hget(bettingId, 'round', (err, result) => {
+            for (let i = 0; i < keys.length; i++) {
+                const cardList = values[i].split(",");
+                if (result === 'round1')
+                    cardList[1] = '0';
+                cardDeck[keys[i]] = cardList;
+            }
+            console.log('cardDeck', cardDeck);
+            res.json(cardDeck);
         });
     });
 });
 
 
-// 베팅 시스템 (수정해야 함)
+// 베팅 시스템
 router.post('/betting', function (req, res, next) {
-    console.log('game', 'betting', req.body);
-
-    let id = req.body.roomId;
+    const id = req.body.roomId;
     const sort = req.body.sort;
     const username = req.body.username;
 
@@ -355,105 +350,110 @@ router.post('/betting', function (req, res, next) {
         return
     }
 
-    // 고유 아이디 뽑기
-    if (!id.startsWith('gameRoom:')) {
-        id = 'gameRoom:' + id;
-    }
-
-    const bettingId = id.replace("gameRoom:", "bettingRoom:");
-    const userId = id.replace("gameRoom:", "userRoom:");
+    const gameId = "gameRoom:" + id;
+    const bettingId = "bettingRoom:" + id;
+    const userId = "userRoom:" + id;
 
     // 먼저 판돈을 가져온다.
     // Edit!
-    getHashMData(res, bettingId, ['boardMoney', 'callMoney', 'prevMoney', username], (dataSet) => {
-        console.log('user', username, 'sort', sort, 'bettingId', bettingId,
-            'betting', dataSet);
+    getHashMData(res, bettingId,
+        ['boardMoney', 'callMoney', 'prevMoney', username],
+        (dataSet) => {
+            //초기값
+            const boardMoney = Number(dataSet[0]);
+            let callMoney = Number(dataSet[1]);
+            const prevMoney = Number(dataSet[2]);
+            const userMoney = Number(dataSet[3]);
+            let bettingMoney = 0;
 
-        const boardMoney = Number(dataSet[0]);
-        let callMoney = Number(dataSet[1]);
-        const prevMoney = Number(dataSet[2]);
-        const userMoney = Number(dataSet[3]);
-        let bettingMoney = 0;
-        const resultBetting = {};
-        // 0 : 콜, 1: 다이, 2: 하프, 3: 쿼터
-        switch (sort) {
-            case 'Call':
-                bettingMoney = callMoney - userMoney;
-                resultBetting['prevMoney'] = bettingMoney;
-                resultBetting[username] = userMoney + bettingMoney;
-                console.log('betting', 'Call', 'bettingMoney', bettingMoney, 'resultBetting', resultBetting);
-                break;
-            case 'Die':
-                bettingMoney = 0;
-                // 마이너스로 해서 mysql 값 넣기
-                console.log('betting', 'Call', 'bettingMoney', bettingMoney, 'resultBetting', resultBetting);
-                break;
-            case 'Half':
-                if (callMoney === 0) {
-                    bettingMoney = basicMoney / 2;
-                } else {
-                    bettingMoney = (boardMoney + prevMoney) / 2 + prevMoney;
-                }
-                resultBetting['callMoney'] = bettingMoney;
-                callMoney = bettingMoney;
-                resultBetting['lastHalf'] = username;
-                resultBetting['prevMoney'] = bettingMoney;
-                resultBetting[username] = userMoney + bettingMoney;
-                console.log('betting', 'Half', 'bettingMoney', bettingMoney, 'resultBetting', resultBetting);
-                break;
-            case 'Quarter':
-                bettingMoney = boardMoney / 4;
-                resultBetting['prevMoney'] = bettingMoney;
-                resultBetting[username] = userMoney + bettingMoney;
-                console.log('betting', 'Quater', 'bettingMoney', bettingMoney, 'resultBetting', resultBetting);
-                break;
-        }
-        // Count 횟수 올려주기
-        res.redis.hget(bettingId, 'count', (err, result) => {
-            res.redis.hset(bettingId, 'count', Number(result) + 1)
+            const resultBetting = {};
+            // 0 : 콜, 1: 다이, 2: 하프, 3: 쿼터
+            switch (sort) {
+                case 'Call':
+                    bettingMoney = callMoney - userMoney;
+                    resultBetting['prevMoney'] = bettingMoney;
+                    resultBetting[username] = userMoney + bettingMoney;
+                    console.log('\nbetting', 'Call', 'bettingMoney', bettingMoney, 'resultBetting', resultBetting);
+                    break;
+                case 'Die':
+                    bettingMoney = 0;
+                    console.log('\nbetting', 'Call', 'bettingMoney', bettingMoney, 'resultBetting', resultBetting);
+                    break;
+                case 'Half':
+                    if (callMoney === 0) {
+                        bettingMoney = basicMoney / 2;
+                    } else {
+                        bettingMoney = (boardMoney + prevMoney) / 2 + prevMoney;
+                    }
+                    resultBetting['callMoney'] = bettingMoney;
+                    callMoney = bettingMoney;
+                    resultBetting['lastHalf'] = username;
+                    resultBetting['prevMoney'] = bettingMoney;
+                    resultBetting[username] = userMoney + bettingMoney;
+                    console.log('\nbetting', 'Half', 'bettingMoney', bettingMoney, 'resultBetting', resultBetting);
+                    break;
+                case 'Quarter':
+                    bettingMoney = boardMoney / 4;
+                    resultBetting['prevMoney'] = bettingMoney;
+                    resultBetting[username] = userMoney + bettingMoney;
+                    console.log('\nbetting', 'Quater', 'bettingMoney', bettingMoney, 'resultBetting', resultBetting);
+                    break;
+            }
+            // Count 횟수 올려주기
+            res.redis.hget(bettingId, 'count', (err, result) => {
+                res.redis.hset(bettingId, 'count', Number(result) + 1)
+            });
+
+            resultBetting['boardMoney'] = boardMoney + Number(bettingMoney);
+
+            setHashMSetData(res, bettingId, resultBetting, () => {
+                nextUser(res, userId, (next) => {
+                    if (sort === 'Die') {
+                        // bettingList에서 지우고
+                        res.redis.lrem(userId, 1, username);
+                    }
+                    console.log('user', 'betting', 'next', next);
+                    res.json({bettingState: [1, 1, 1, 1], money: boardMoney, callMoney: callMoney});
+                    res.io.to(id).emit('updateBetting', boardMoney, callMoney, username, sort, next);
+                })
+            });
         });
-
-        resultBetting['boardMoney'] = boardMoney + Number(bettingMoney);
-
-        setHashMSetData(res, bettingId, resultBetting, () => {
-            nextUser(res, userId, (next) => {
-                if (sort === 'Die') {
-                    // bettingList에서 지우고
-                    res.redis.lrem(userId, 1, username);
-                }
-                console.log('user', 'betting', 'next', next);
-                res.json({user_betting: [1, 1, 1, 1], money: boardMoney, callMoney: callMoney});
-                res.io.to(id).emit('betting', boardMoney, username, sort, next);
-            })
-        });
-    });
 });
+
 
 // 수정사항
 // 전부 콜을 하고 2번째 판에 하프가 안됨
 // 전부 콜을 한 상황에서는 2바퀴 돌아야 하는데 4바퀴 돔
 router.get(`/betting/check`, [authJwt.verifyToken], function (req, res, next) {
-    console.log('game', 'betting', 'check', req.query);
-    let id = req.query.id;
-    if (!id.startsWith('gameRoom:')) {
-        id = 'gameRoom:' + id;
-    }
+    const id = req.query.id;
     const username = req.query.username;
-    const bettingId = id.replace("gameRoom:", "bettingRoom:");
-    const userId = id.replace("gameRoom:", "userRoom:");
-    const cardId = id.replace("gameRoom:", "cardRoom:");
+
+    //역시 값 검증 들어갑니다.
+    if (!id || !username) {
+        res.json("error!");
+        return
+    }
+
+    const gameId = 'gameRoom:' + id;
+    const bettingId = "bettingRoom:" + id;
+    const userId = "userRoom:" + id;
+    const cardId = "cardRoom:" + id;
 
     res.redis.llen(userId, (err, userCount) => {
         res.redis.hget(bettingId, 'count', (err, result) => {
-            checkingFinished(res, bettingId, ['lastHalf', 'round'], username, (isFinish) => {
-                if (isFinish.result) {
+            checkingFinished(res,
+                bettingId,
+                ['lastHalf', 'round'],
+                username,
+                (isFinish) => {
+
                     // 결 과 내 기
+                if (isFinish.result) {
                     const cardResultArray = [];
                     const specialCardResultArray = [];
 
                     getHashAllData(res, cardId, (allData) => {
                         res.redis.lrange(userId, 0, -1, (err, users) => {
-                            console.log('lrange', users, 'allData', allData);
                             const keySet = Object.keys(allData);
                             users.forEach((el) => {
                                 const cards = allData[el];
@@ -462,75 +462,68 @@ router.get(`/betting/check`, [authJwt.verifyToken], function (req, res, next) {
                                 cardResultArray.push(cardResult(cardList[0], cardList[1]));
                                 specialCardResultArray.push(speicialCardResult(cardList[0], cardList[1]));
                             });
+
                             // 최댓값 찾기
                             const result = cardResultArray.reduce((previous, current) => {
                                 return previous > current ? previous : current;
                             });
+
                             // 특수 족보 찾기
                             const final = finalResult(result, specialCardResultArray);
-                            console.log('final', final);
+                            console.log('winerValue', final);
 
                             // 데이터 지우기
                             res.redis.del(userId);
                             res.redis.del(cardId);
-                            const bettingData = {
-                                'boardMoney': 0,
-                                'lastHalf': '',
-                                'count': 0,
-                                'callMoney': 0,
-                                'prevMoney': 0,
-                                'round': 'round1'
-                            };
-                            res.redis.hmset(bettingId, bettingData);
 
+                            res.redis.hmset(bettingId, bettingData);
                             //아래에서 승자를 roomMaster로 바꿔주기
                             switch (final) {
                                 case 'ab':
                                     const abKey = keySet[specialCardResultArray.indexOf('ab')];
-                                    res.redis.hset(id, 'roomMaster', abKey);
-                                    console.log(abKey);
-                                    res.io.to(id).emit('finish', allData, abKey);
+                                    res.redis.hset(gameId, 'roomMaster', abKey);
+                                    console.log('winner', abKey);
+                                    res.io.to(id).emit('finish', abKey);
                                     res.json({
-                                        winner: abKey,
-                                        finish: true,
-                                        user_betting: [1, 1, 1, 1]
+                                        windUser: abKey,
+                                        bettingState: [1, 1, 1, 1]
                                     });
                                     break;
                                 case 'ac':
                                     const acKey = keySet[specialCardResultArray.indexOf('ac')];
-                                    res.redis.hset(id, 'roomMaster', acKey);
+                                    res.redis.hset(gameId, 'roomMaster', acKey);
                                     console.log(acKey);
-                                    res.io.to(id).emit('finish', allData, acKey);
+                                    res.io.to(id).emit('finish', acKey);
                                     res.json({
-                                        winner: acKey,
-                                        finish: true,
-                                        user_betting: [1, 1, 1, 1]
+                                        windUser: acKey,
+                                        bettingState: [1, 1, 1, 1]
                                     });
                                     break;
                                 default:
                                     const KKK = keySet[cardResultArray.indexOf(final)];
-                                    res.redis.hset(id, 'roomMaster', KKK);
+                                    res.redis.hset(gameId, 'roomMaster', KKK);
                                     console.log(KKK);
-                                    res.io.to(id).emit('finish', allData, KKK);
+                                    res.io.to(id).emit('finish', KKK);
                                     res.json({
-                                        winner: KKK,
-                                        finish: true,
-                                        user_betting: [1, 1, 1, 1]
+                                        windUser: KKK,
+                                        bettingState: [1, 1, 1, 1]
                                     });
                                     break;
                             }
                         });
                     });
                 } else {
+                    if (isFinish.round === 'round2')
+                        res.io.to(id).emit('updateCard', id);
                     const userN = Number(userCount);
                     const counter = Number(result);
                     const half = (counter / userN) + Number((isFinish.round === 'round2') ? 1 : 0);
                     const quater = (isFinish.round === 'round2') ? ((counter / userN) % 2 + 1) % 2 : 1;
+
                     console.log('bettingState', 'round', isFinish.round, 'half', half, 'quater', quater);
                     const bettingState = [0, 0, Math.floor(half % 2), Math.floor(quater)];
                     res.json({
-                        finish: false,
-                        user_betting: bettingState
+                        bettingState: bettingState
                     });
                 }
             });
@@ -539,20 +532,19 @@ router.get(`/betting/check`, [authJwt.verifyToken], function (req, res, next) {
 });
 
 
-// User 목록 불러오기
+// 완료 ||| User 목록 불러오기
 router.get(`/user/list`, [authJwt.verifyToken], function (req, res, next) {
     console.log('game', 'user', 'list', req.query.id);
     let id = req.query.id;
-    if (!id.startsWith('gameRoom:')) {
-        id = 'gameRoom:' + id;
-    }
+    const gameId = "gameRoom:" + id;
     if (id) {
-        readHashKey(res, id, (data) => {
-            console.log('game', 'user', 'list', 'return', data);
-            delete data.roomId;
-            delete data.roomMaster;
-            delete data.roomName;
-            delete data.roomCreatAt;
+        readHashKey(res, gameId, (data) => {
+            if (data.length !== 0) {
+                delete data.roomId;
+                delete data.roomMaster;
+                delete data.roomName;
+                delete data.roomCreatAt;
+            }
             res.json(data);
         })
     } else {

@@ -5,21 +5,18 @@ import React, {Component} from 'react';
  */
 export class UserPanel extends Component {
     render() {
-        const {
-            username, usermoney
-        } = this.props.userInfo;
-
+        const {user}= this.props;
         const {className} = this.props;
         const {handCards} = this.props;
         const {bettingResult} = this.props;
-        console.log('up', handCards, 'name', username, 'bettingResult', bettingResult);
+        console.log('up', handCards, 'name', user, 'bettingResult', bettingResult);
         return (
             <div className={className}>
                 <img></img>
                 <img></img>
                 <img></img>
-                <p>ID : {username}</p>
-                <p>보유 머니 : {usermoney}</p>
+                <p>ID : {user}</p>
+                <p>보유 머니 : </p>
                 <p>패 결과 표시 {
                     (handCards === undefined) ? ['0a', '0b'] : handCards
                 }:</p>

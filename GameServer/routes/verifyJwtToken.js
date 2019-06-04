@@ -6,7 +6,7 @@ const User = db.user;
 
 verifyToken = (req, res, next) => {
     let token = req.headers['x-access-token'] || req.headers['authorization'];
-    console.log('verify', token, req.headers);
+    // console.log('verify', token, req.headers);
     if (token.startsWith('Bearer ')) {
         // Remove Bearer from string
         token = token.slice(7, token.length);
@@ -29,7 +29,7 @@ verifyToken = (req, res, next) => {
                     message: 'Fail to Authentication. Error -> ' + err
                 });
             }
-            console.log('iddidid', decoded.id);
+            // console.log('iddidid', decoded.id);
             req.decoded = decoded.id;
             next();
         });

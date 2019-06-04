@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import {gameActions, lobbyActions} from '../actions';
 import {LobbyList} from '../components';
@@ -25,21 +25,21 @@ class LobbyContainer extends Component {
     handleClick = (e) => {
         e.preventDefault();
         const {username, history} = this.props;
-        const users = {
-            roomName: username + '의 방',
-            roomMaster: username
-        };
-        this.props.onMakeRoom(users, history);
-    }
+
+        const roomName = username + '의 방';
+        const roomMaster = username;
+
+        this.props.onMakeRoom(roomName, roomMaster, history);
+    };
 
     handleLobbyClick = (key, e) => {
         e.preventDefault();
         const {username, history} = this.props;
-        const users = {
-            roomId: key,
-            name: username
-        };
-        this.props.onInsertRoom(users, history);
+
+        const roomId = key;
+        const name = username;
+
+        this.props.onInsertRoom(roomId, name, history);
     };
 
     handleLobbyRefresh = (e) => {
@@ -55,41 +55,28 @@ class LobbyContainer extends Component {
         const {lobbyList} = this.props;
         console.log('LobbyContainer render', lobbyList);
         return (
-            <Container>
-                <Row>
-                    <Col xs={10}>
+            <div>
+
+                <button  onClick={this.handleLobbyRefresh}>새로고침</button>
+
+                    <button onClick={this.handleClick}>방만들기</button>
+
+                <div className="col-xs-12">
+                    <div className="list-type3">
                         <LobbyList lobbyList={lobbyList} handleLobbyClick={this.handleLobbyClick}/>
-                    </Col>
-                    <Col xs={2}>
-                        <ButtonGroup vertical={true}>
-                            <Button onClick={this.handleClick}>
-                                방 만들기
-                            </Button>
-                            <Button onClick={this.handleLobbyRefresh}>
-                                새로고침
-                            </Button>
-                            <Button>
-                                종료
-                            </Button>
-                        </ButtonGroup>
-                    </Col>
-                </Row>
-            </Container>
+                    </div>
+                </div>
+
+            </div>
         )
     }
 }
 
-LobbyContainer.propTypes = {
-    onListRoomList: PropTypes.func.isRequired,
-    onMakeRoom: PropTypes.func.isRequired,
-    onInsertRoom: PropTypes.func.isRequired
-};
-
-
 const mapStateToProps = (state) => {
     const {current_username} = state.authentication;
+    const {lobby} = state.lobby;
     return {
-        lobbyList: state.lobby,
+        lobbyList: lobby,
         username: current_username
     };
 };
@@ -99,11 +86,11 @@ const mapDispatchToProps = (dispatch) => (
         onListRoomList: () => {
             dispatch(lobbyActions.loadGameLobby());
         },
-        onMakeRoom: (users, history) => {
-            dispatch(lobbyActions.makeGame(users, history));
+        onMakeRoom: (roomName, roomMaster, history) => {
+            dispatch(lobbyActions.makeGame(roomName, roomMaster, history));
         },
-        onInsertRoom: (users, history) => {
-            dispatch(lobbyActions.insertGame(users, history));
+        onInsertRoom: (roomId, name, history) => {
+            dispatch(lobbyActions.insertGame(roomId, name, history));
         }
     }
 );

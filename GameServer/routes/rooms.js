@@ -7,8 +7,7 @@ const db = require('../config/db.config.js');
 const GameInfo = db.gameInfo;
 
 /*
-  Todo : Input Member Socket Room
-  Todo : Room Making Save Redis
+  Todo : Room User List UPDATE
  */
 
 const custonSort = (a, b) => {
@@ -16,43 +15,36 @@ const custonSort = (a, b) => {
         return 0
     }
     return a.roomCreatAt > b.roomCreatAt ? 1 : -1;
-}
+};
 
+const bettingDataInit = {
+    'boardMoney': 0,
+    'lastHalf': '',
+    'count': 0,
+    'callMoney': 0,
+    'prevMoney': 0,
+    'round': 'round1'
+};
 
-const readKey = (res, callback) => {
-    const data = [];
+const lobby = (res, callback) => {
+    const lobbyList = [];
     res.redis.keys("gameRoom:*", (err, keys) => {
-        console.log('redis', 'keys', keys);
-        if (keys.length !== 0)
+        console.log('gameRoom', 'list', keys);
+        if (keys.length !== 0) {
             keys.forEach((item, index, array) => {
                 res.redis.hgetall(item, (err, results) => {
-                    console.log('index', index, results);
-                    const roomList = {
-                        "roomId": results.roomId,
-                        "roomName": results.roomName,
-                        "roomMaster": results.roomMaster,
-                        "roomCreatAt": results.roomCreatAt
-                    };
-                    data.push(roomList);
+                    lobbyList.push(results);
                     if (index === array.length - 1)
-                        callback(data);
-                })
+                        callback(lobbyList);
+                });
             });
-        else
-            callback(
-                []
-            );
+        } else {
+            callback(lobbyList);
+        }
     });
 };
 
-const inputUser = (res, key, callback) => {
-    res.redis.hlen(key, (err, number) => {
-        callback(number + 1);
-    })
-};
-
-
-// 여기서 방 만들고 redis 저장
+// ::::/v1/room/make
 router.post('/make', [authJwt.verifyToken], function (req, res, next) {
     // 정렬을 위한 지금 시간
     const clock = new Date();
@@ -65,77 +57,90 @@ router.post('/make', [authJwt.verifyToken], function (req, res, next) {
     }
 
     // 인자값 등록
-    const member = req.body["roomMaster"];
+    const user = req.body["roomMaster"];
     const data = {
         'roomId': uuid,
         'roomName': req.body["roomName"],
-        'roomMaster': req.body["roomMaster"],
+        'roomMaster': user,
         'roomCreatAt': clock
     };
 
-    data[member] = 100000000;
 
-    res.redis.hmset('gameRoom:' + uuid, data);
+    GameInfo.findOne({
+        where: {username: user}
+    }).then(info => {
+            //리턴용 룸 정보
+            const gameRoomData = Object.assign({}, data);
+            gameRoomData[user] = info.money;
+            const bettingData = Object.assign({}, bettingDataInit);
+            bettingData[user] = 0;
 
-    const bettingData = {
-        'boardMoney': 0,
-        'lastHalf': '',
-        'count': 0,
-        'callMoney': 0,
-        'prevMoney': 0,
-        'round': 'round1'
-    };
-
-    res.redis.hmset('bettingRoom:' + uuid, bettingData);
-
-    console.log('room', 'post', 'make', data, 'betting', bettingData);
-    delete data[member];
-    res.json(data);
+            res.redis.hmset('gameRoom:' + uuid, gameRoomData);
+            res.redis.hmset('bettingRoom:' + uuid, bettingData);
+            console.log('room', 'post', 'make', data, '\ngameRoomData', gameRoomData, '\nbetting', bettingData);
+            res.redis.hgetall('bettingRoom:' + uuid, (err, result) => {
+                Object.keys(bettingDataInit).forEach(e => delete result[e]);
+                gameRoomData['userList'] = Object.keys(result);
+                gameRoomData['userMoneyList'] = result;
+                res.json(gameRoomData);
+            });
+        }
+    );
 });
 
-// 새로운 멤버가 추가된다.
+// ::::/v1/room/input
 router.post('/input', [authJwt.verifyToken], function (req, res, next) {
-    console.log('room', 'input', 'post', res.body);
-
+    //인자값 검사자
     if (!req.body["roomId"] || !req.body['userName']) {
         res.json({result: false});
         return
     }
 
-    const id = "gameRoom:" + req.body["roomId"];
-    const bettingid = "bettingRoom:" + req.body["roomId"];
+    // 인자 값 만들기
+    const id = req.body["roomId"];
+    const gameRoomid = "gameRoom:" + id;
+    const bettingid = "bettingRoom:" + id;
     const username = req.body['userName'];
-    const data = 100000000;
 
-    // 새로운 유저 허가
-    res.redis.hset(id, username, data);
-    res.redis.hset(bettingid, username, 0);
-
-    const roomData = {
-        'roomId': id
+    const data = {
+        'roomId': id,
     };
-    roomData[username] = data;
-    console.log('room', 'post', 'input', roomData);
-    res.json(roomData);
-});
-
-router.get('/list', [authJwt.verifyToken], function (req, res, next) {
-    readKey(res, (roomList) => {
-        roomList.sort(custonSort);
-        res.send(roomList);
-    })
-});
-
-router.get('/test', [authJwt.verifyToken], function (req, res, next) {
     GameInfo.findOne({
-        where: {username: req.query.username}
-    })
-        .then(info => {
-                console.log(info.money);
-                res.json({money: info.money})
-            }
-        )
+        where: {username: username}
+    }).then(info => {
+            res.redis.hget(gameRoomid, 'roomMaster', (err, result) => {
+                //리턴용 룸 정보
+                const roomData = Object.assign({}, data);
+                roomData['roomMaster'] = result;
+                roomData[username] = info.money;
+                roomData['userList'] = [];
 
+                // 새로운 유저 허가
+                const usermoney = info.money;
+                res.redis.hset(bettingid, username, 0);
+                res.redis.hset(gameRoomid, username, usermoney);
+
+                console.log('room', 'post', 'input', roomData);
+                res.redis.hgetall(bettingid, (err, result) => {
+                    roomData['userList'] = Object.keys(bettingDataInit).forEach(e => delete result[e]);
+                    res.json(roomData);
+                });
+            });
+
+        }
+    );
+});
+
+
+// ::::/v1/room/list
+router.get('/list', [authJwt.verifyToken], function (req, res, next) {
+    lobby(res, (lobbyList) => {
+        lobbyList.sort(custonSort);
+        console.log(lobbyList);
+        res.json({
+            list: lobbyList
+        });
+    });
 });
 
 module.exports = router;

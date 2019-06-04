@@ -33,7 +33,7 @@ class GameRoomContainer extends Component {
     }
 
     componentDidMount() {
-        const {username, roomId} = this.props;
+        const {username, roomId, handCards, location} = this.props;
         socket = socketIo(this.state.endpoint, {transports: ['websocket']});
         /**
          *  Socket Event:
@@ -46,14 +46,14 @@ class GameRoomContainer extends Component {
          */
         // 유저가 방에 들어온 경우
         if (typeof username !== 'undefined') {
-            console.log('socket', 'io', 'emit', 'roomId', roomId);
-            socket.emit('joinRoom', roomId);
+            console.log('socket', 'io', 'emit', 'roomId', location.state.roomId);
+            socket.emit('joinRoom', location.state.roomId, username);
         }
         //gameStart
         socket.on('startGame', (roomId) => {
             console.log('socket', 'io', 'startGame', 'on', 'roomId', roomId);
             this.props.onStart(roomId, username);
-        })
+        });
         // user목록 업데이트
         socket.on('updateUser', (roomId) => {
             console.log('socket', 'io', 'updateUser', 'on', 'roomId', roomId);
@@ -69,11 +69,11 @@ class GameRoomContainer extends Component {
         // 베팅 업데이트
         socket.on('updateBetting', (boardMoney, callMoney, bettingUser, bettingSort, nextUser) => {
             console.log('socket', 'io', 'betting', 'on',
-                'boardMoney', boardMoney,
-                'bettingUser', bettingUser,
-                'callMoney', callMoney,
-                'bettingSort', bettingSort,
-                'nextUser', nextUser);
+                '\nboardMoney', boardMoney,
+                '\nbettingUser', bettingUser,
+                '\ncallMoney', callMoney,
+                '\nbettingSort', bettingSort,
+                '\nnextUser', nextUser);
             // 내가 다음 유저면
             if (username === nextUser)
                 this.props.onCheckBettingState(roomId, username);
@@ -85,7 +85,6 @@ class GameRoomContainer extends Component {
             console.log('socket', 'io', 'finish', 'on', 'winUser', winUser);
             this.props.handleGameFinish(winUser);
         });
-
     }
 
     componentWillUnmount() {
@@ -94,8 +93,8 @@ class GameRoomContainer extends Component {
 
     handleOnClick = (e) => {
         e.preventDefault();
-        const {roomId, username} = this.props;
-        this.props.onGameStart(roomId, username);
+        const {roomId, username, gameMember} = this.props;
+        this.props.onGameStart(roomId, username, gameMember);
     };
 
     handleLeaveRoom = (e) => {
@@ -195,11 +194,11 @@ const mapDispatchToProps = (dispatch) => (
         onLoadUserList: (id) => {
             dispatch(gameActions.loadUserList(id));
         },
-        onGameStart: (id, username) => {
-            dispatch(gameActions.onStart(id, username));
+        onGameStart: (id, username, userList) => {
+            dispatch(gameActions.onStart(id, username, userList));
         },
         // Socket -> |
-        onStart: (roomId, username) => {
+        onStart: (id, username) => {
             dispatch(gameActions.startGame(id, username));
         },
         onLoadUserCards: (id, username) => {
@@ -229,6 +228,11 @@ const mapDispatchToProps = (dispatch) => (
         }
     }
 );
+
+GameRoomContainer.defaultProps = {
+    gameMember: [],
+    userBetting: {}
+};
 
 
 // 디스패치와 상태를 주입하려는 컴포넌트를 감싸줍니다.

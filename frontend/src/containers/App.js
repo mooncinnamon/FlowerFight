@@ -1,8 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {userActions} from '../actions';
 import {connect} from 'react-redux';
-import {Jumbotron, Container, Row, Col} from 'reactstrap';
-import {GamePanel, LoginForm, UserInfoForm, Menu} from '../components';
+import {GamePanel, LoginForm, UserInfoForm} from '../components';
 
 
 class App extends Component {
@@ -91,6 +90,19 @@ class App extends Component {
                             </div>
                     </div>
                 </section>
+                <footer>
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-4">
+                                <p></p>
+                            </div>
+
+                            <div className="col-md-4">
+                                <p>Copyright all rights reserved </p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
             </Fragment>
         );
     }

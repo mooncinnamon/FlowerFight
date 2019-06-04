@@ -4,17 +4,20 @@ import {ListGroup, ListGroupItem} from 'reactstrap';
 class LobbyList extends Component {
     render() {
         const {lobbyList, handleLobbyClick} = this.props;
+        console.log('lobbyList', lobbyList);
         return (
-            <ListGroup>
+            <ul>
                 {
                     lobbyList.map(lobby => (
-                        <ListGroupItem key={lobby.roomId} name={lobby.roomName}
-                                       onClick={handleLobbyClick.bind(this,lobby.roomId)}>
-                            {lobby.roomName}
-                        </ListGroupItem>
+                        <li key={lobby.roomId}
+                            onClick={handleLobbyClick.bind(this, lobby.roomId)}>
+                            <a href={'#'}>
+                                {lobby.roomName}
+                            </a>
+                        </li>
                     ))
                 }
-            </ListGroup>
+            </ul>
         )
     }
 }

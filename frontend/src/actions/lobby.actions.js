@@ -1,4 +1,4 @@
-import {lobbyConstants} from '../constants';
+import {gameConstants, lobbyConstants} from '../constants';
 import {lobbyService} from '../services';
 
 export const lobbyActions = {
@@ -21,7 +21,7 @@ function loadGameLobby() {
 
     function success(lobbyList) {
         console.log('actions', 'lobby', 'success', lobbyList);
-        return {type: lobbyConstants.LOBBY_SUCCESS, lobbyList: lobbyList}
+        return {type: lobbyConstants.LOBBY_SUCCESS, lobbyList: lobbyList.list}
     }
 
     function failure(error) {
@@ -38,20 +38,22 @@ function makeGame(roomname, username, history) {
                 dispatch(success(roomData));
                 history.replace({
                     pathname: '/game',
+                    state: {roomId: roomData.roomId}
                 });
             }).catch(
             err => {
                 dispatch(failure(err))
             });
-    }
+    };
 
     function success(data) {
         console.log('actions', 'lobby', 'makeGame', 'success', data);
         return {
-            type: lobbyConstants.GAME_INSERT,
+            type: gameConstants.GAME_INSERT,
             roomId: data.roomId,
             roomMaster: data.roomMaster,
-            userList: data.userList
+            userList: data.userList,
+            userMoneyList: data.userMoneyList
         }
     }
 
@@ -69,7 +71,8 @@ function insertGame(id, username, history) {
             .then(roomData => {
                 dispatch(success(roomData));
                 history.replace({
-                    pathname: '/game'
+                    pathname: '/game',
+                    state: {roomId: roomData.roomId}
                 });
             }).catch(
             err => {
@@ -80,7 +83,7 @@ function insertGame(id, username, history) {
     function success(data) {
         console.log('actions', 'lobby', 'inserGame', 'success', data);
         return {
-            type: lobbyConstants.GAME_INSERT,
+            type: gameConstants.GAME_INSERT,
             roomId: data.roomId,
             roomMaster: data.roomMaster,
             userList: data.userList

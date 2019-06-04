@@ -26,7 +26,7 @@ function loadLobby() {
             console.log('services', 'lobby', 'loadLobby', 'error', err);
             return err;
         });
-}find
+}
 
 /**
  * @param user
@@ -57,7 +57,7 @@ function insertGame(id, username) {
 
     const body = {
         'roomId': id,
-        'username': username
+        'userName': username
     };
 
     return axios.post(`http://localhost:4000/v1/room/input`, body, requestOptions)

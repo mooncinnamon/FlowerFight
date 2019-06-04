@@ -31,9 +31,9 @@ export function loadUserList(id) {
 
 
 // Game 시작버튼 눌렀을때.
-export function onStart(id, username) {
+export function onStart(id, username, userList) {
     return dispatch => {
-        gameService.onStart(id, username)
+        gameService.onStart(id, username, userList)
             .then(response => {
                     dispatch(success(response))
                 }
@@ -57,7 +57,7 @@ export function onStart(id, username) {
 // Socket이 불러주는 호출
 export function startGame(id, username) {
     return dispatch => {
-        gameService.onStart(id, username)
+        gameService.startGame(id, username)
             .then(response => {
                     dispatch(success(response))
                 }
@@ -128,7 +128,7 @@ export function loadUserCards(id, username) {
 
     function success(res) {
         console.log('actions', 'game', 'loadUserCards', 'success', res);
-        return {type: gameConstants.GAME_USER_CARD_SUCCESS, handCards: res.handCards}
+        return {type: gameConstants.GAME_USER_CARD_SUCCESS, handCards: res}
     }
 
     function failure(error) {

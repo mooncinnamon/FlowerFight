@@ -6,7 +6,8 @@ export const gameService = {
     onStart,
     loadUserCards,
     betting,
-    bettingCheck
+    bettingCheck,
+    startGame
 };
 
 
@@ -26,18 +27,7 @@ function loadUserList(roomId) {
     return axios.get('http://localhost:4000/v1/game/user/list', requestOptions)
         .then(response => {
             console.log('service', 'game', response.data);
-            const lobbyRoom = [];
-            for (const key in response.data) {
-                const data = JSON.parse(response.data[key]);
-                lobbyRoom.push({
-                    name: key,
-                    money: data.money
-                });
-            }
-            console.log('service', 'game', 'result', lobbyRoom);
-            return {
-                data: lobbyRoom
-            }
+            return response.data
         }).catch(res => {
             console.log('service', 'game', 'catch', res);
             return Promise.reject(res);
@@ -84,25 +74,47 @@ function bettingCheck(roomId, username) {
         })
 }
 
+
+function startGame(roomId, username) {
+    const requestOptions = {
+        headers: authHeader(),
+        params: {
+            id: roomId,
+            username: username
+        }
+    };
+
+    return axios.get('http://localhost:4000/v1/game/start/game', requestOptions)
+        .then(response => {
+            console.log('service', 'game', 'user', 'card', response.data);
+            return response.data;
+        }).catch(err => {
+            console.log('service', 'game', 'user', 'card', 'error', err);
+            return err;
+        })
+}
+
+
 /**
  * 여기서 부터는 Post
  */
 
 // Game 시작
-function onStart(id, username) {
+function onStart(id, username, userList) {
     const requestOptions = {
         headers: authHeader(),
     };
 
     const body = {
         "roomId": id,
-        "username": username
+        "username": username,
+        "userList": userList
     };
 
     return axios.post('http://localhost:4000/v1/game/start', body, requestOptions)
         .then(response => {
-            console.log('service', 'game', 'start', response);
-            return response;
+            console.log('service', 'game', 'start', response.data);
+            return response.data;
         }).catch(err => {
             console.log('service', 'game', 'start', 'error', err);
             return err;
